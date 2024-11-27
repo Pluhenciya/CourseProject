@@ -67,7 +67,7 @@ namespace AutodorInfoSystem.Controllers
 
             Response.Cookies.Append("A", _tokenService.CreateToken(userExist));
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Projects");
         }
 
         [HttpPost]
