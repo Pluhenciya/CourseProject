@@ -11,5 +11,7 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
+    public virtual Admin? Admin { get; set; }
+
     public virtual Projecter? Projecter { get; set; }
 }

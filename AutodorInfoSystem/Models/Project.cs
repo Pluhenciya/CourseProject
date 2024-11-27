@@ -9,7 +9,7 @@ public partial class Project
 
     public string Name { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; } = null!;
 
     public ulong IsCompleted { get; set; }
 

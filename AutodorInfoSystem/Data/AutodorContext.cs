@@ -17,6 +17,8 @@ public partial class AutodorContext : DbContext
     {
     }
 
+    public virtual DbSet<Admin> Admins { get; set; }
+
     public virtual DbSet<Equipment> Equipment { get; set; }
 
     public virtual DbSet<EquipmentHasTask> EquipmentHasTasks { get; set; }
@@ -44,6 +46,22 @@ public partial class AutodorContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<Admin>(entity =>
+        {
+            entity.HasKey(e => e.UsersIdUser).HasName("PRIMARY");
+
+            entity.ToTable("admins");
+
+            entity.Property(e => e.UsersIdUser)
+                .ValueGeneratedNever()
+                .HasColumnName("users_id_user");
+
+            entity.HasOne(d => d.UsersIdUserNavigation).WithOne(p => p.Admin)
+                .HasForeignKey<Admin>(d => d.UsersIdUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_admins_users1");
+        });
 
         modelBuilder.Entity<Equipment>(entity =>
         {
@@ -143,7 +161,7 @@ public partial class AutodorContext : DbContext
                 .HasColumnType("bit(1)")
                 .HasColumnName("is_completed");
             entity.Property(e => e.Name)
-                .HasMaxLength(45)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 

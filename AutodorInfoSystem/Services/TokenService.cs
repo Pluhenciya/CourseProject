@@ -22,7 +22,8 @@ namespace AutodorInfoSystem.Services
             var claims = new List<Claim>
             {
                new Claim(ClaimTypes.Name, user.Login),
-               new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString())
+               new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+               new Claim(ClaimTypes.Role, user.Admin != null ? "Admin" : "Projecter")
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
