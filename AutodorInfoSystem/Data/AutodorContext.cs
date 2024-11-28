@@ -219,7 +219,7 @@ public partial class AutodorContext : DbContext
 
             entity.ToTable("tasks");
 
-            entity.HasIndex(e => e.ProjectsIdProject, "fk_tasks_projects1_idx");
+            entity.HasIndex(e => e.IdProject, "fk_tasks_projects1_idx");
 
             entity.Property(e => e.IdTask).HasColumnName("id_task");
             entity.Property(e => e.Description)
@@ -228,10 +228,10 @@ public partial class AutodorContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(45)
                 .HasColumnName("name");
-            entity.Property(e => e.ProjectsIdProject).HasColumnName("projects_id_project");
+            entity.Property(e => e.IdProject).HasColumnName("id_project");
 
-            entity.HasOne(d => d.ProjectsIdProjectNavigation).WithMany(p => p.Tasks)
-                .HasForeignKey(d => d.ProjectsIdProject)
+            entity.HasOne(d => d.IdProjectNavigation).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.IdProject)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_tasks_projects1");
         });

@@ -3,6 +3,7 @@ using AutodorInfoSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutodorInfoSystem.Migrations
 {
     [DbContext(typeof(AutodorContext))]
-    partial class AutodorContextModelSnapshot : ModelSnapshot
+    [Migration("20241127223504_FixNaming")]
+    partial class FixNaming
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,7 +215,7 @@ namespace AutodorInfoSystem.Migrations
 
                     b.Property<int>("IdProject")
                         .HasColumnType("int")
-                        .HasColumnName("id_project");
+                        .HasColumnName("projects_id_project");
 
                     b.Property<string>("Name")
                         .IsRequired()
