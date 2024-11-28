@@ -11,7 +11,7 @@ public partial class Project
 
     public string? Description { get; set; } = null!;
 
-    public ulong IsCompleted { get; set; }
+    public bool IsCompleted { get; set; }
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 

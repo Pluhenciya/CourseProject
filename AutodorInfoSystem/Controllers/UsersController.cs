@@ -54,8 +54,13 @@ namespace AutodorInfoSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([Bind("Login, Password")] User user)
+        public async Task<IActionResult> Login(string login, string password)
         {
+            var user = new User
+            {
+                Login = login,
+                Password = password
+            };
 
             var userExist = _userService.UserVerify(user);
 
