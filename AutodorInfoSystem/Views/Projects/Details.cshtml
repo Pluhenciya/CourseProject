@@ -34,7 +34,7 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdProject">Edit</a> |
     <a asp-action="Index">Back to List</a> |
-    <a asp-action="AddTask" asp-route-projectId="@Model?.IdProject">Add Task</a>
+    <a asp-action="Create" asp-controller="Tasks" asp-route-idProject="@Model?.IdProject">Add Task</a>
 </div>
 
 <h3>Tasks</h3>
@@ -63,8 +63,8 @@
                         @Html.DisplayFor(modelItem => task.Description)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-controller="Task" asp-route-id="@task.IdTask">View</a> |
-                        <a asp-action="Edit" asp-controller="Task" asp-route-id="@task.IdTask">Edit</a>
+                        <a asp-action="Details" asp-controller="Tasks" asp-route-id="@task.IdTask">View</a> |
+                        <a asp-action="Edit" asp-controller="Tasks" asp-route-id="@task.IdTask">Edit</a>
                     </td>
                 </tr>
             }
