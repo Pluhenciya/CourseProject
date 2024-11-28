@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,27 +7,38 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AutodorInfoSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">АДИС</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <a class="navbar-brand" href="#">
+                    АДИС
+                </a>
+                <button aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию" class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+                    <span class="navbar-toggler-icon">
+                    </span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Проекты</a>
+                            <a class="nav-link text-dark active" asp-controller="Projects" asp-action="Index">
+                                <i class="fas fa-project-diagram">
+                                </i>
+                                Проекты
+                            </a>
                         </li>
                     </ul>
                     @if (!User.Identity.IsAuthenticated)
                     {
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary" asp-area="" asp-controller="Users" asp-action="Login">Войти</a>
+                                <a class="btn btn-outline-primary" data-bs-target="#loginModal" data-bs-toggle="modal" href="#">
+                                    <i class="fas fa-sign-in-alt">
+                                    </i>
+                                    Войти
+                                </a>
                             </li>
                         </ul>
                     }
@@ -39,6 +50,85 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    </div>
+    <footer class="text-center mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>
+                        О нас
+                    </h5>
+                    <p>
+                        «Архангельскавтодор» — государственное казённое учреждение Архангельской области, осуществляющее полномочия государственного управления в сфере дорожного хозяйства региона.
+                    </p>
+                    <p>
+                        Основные задачи агентства включают подготовку проектной документации, контроль за качеством выполняемых работ и обеспечение безопасности движения.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>
+                        Быстрые ссылки
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a asp-controller="Projects" asp-action="Index">
+                                Проекты
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>
+                        Свяжитесь с нами
+                    </h5>
+                    <div>
+                        <strong>Телефоны:</strong><br>
+                        <div>(8182) 20-64-55</div>
+                        <div>(8182) 20-66-68 — Центр управления движением.</div>
+                        <div>(8182) 45-42-84 — Согласование в ИС «КТГ-услуга» (Росдормониторинг) и опасных грузов.</div>
+                    </div>
+                    <p>
+                        Запросы на согласование перевозки опасных грузов отправлять по адресу sr@ador.ru.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <p>
+            © @DateTime.Now.Year - Архангельскавтодор
+        </p>
+    </footer>
+    <!-- Login Modal -->
+    <div aria-hidden="true" aria-labelledby="loginModalLabel" class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        Вход
+                    </h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Users" asp-action="Login">
+                        <div class="mb-3">
+                            <label class="form-label" for="login">
+                                Логин
+                            </label>
+                            <input class="form-control" name="login" type="text" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="password">
+                                Пароль
+                            </label>
+                            <input class="form-control" name="password" type="password" />
+                        </div>
+                        <button class="btn btn-primary" type="submit">
+                            Войти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

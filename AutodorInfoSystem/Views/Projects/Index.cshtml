@@ -1,55 +1,82 @@
 ﻿@model IEnumerable<AutodorInfoSystem.Models.Project>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Проекты";
 }
 
-<h1>Index</h1>
-@if (User.Identity.IsAuthenticated)
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsCompleted)
-            </th>
-            @if (User.Identity.IsAuthenticated)
-{
-            <th></th>
-}
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsCompleted)
-            </td>
-                @if (User.Identity.IsAuthenticated)
-                {
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdProject">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdProject">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdProject">Delete</a>
-            </td>
-                }
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-12">
+        <h2>
+            Проекты
+        </h2>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary mb-3" asp-action="Create">
+                <i class="fas fa-plus-circle">
+                </i>
+                Создать новый
+            </a>
+        }
+        <div class="card bg-light text-dark">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Название проекта
+                            </th>
+                            <th scope="col">
+                                Описание проекта
+                            </th>
+                            <th scope="col">
+                                Завершен
+                            </th>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <th scope="col">
+                                    Действия
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var project in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @project.Name
+                                </td>
+                                <td>
+                                    @project.Description
+                                </td>
+                                <td>
+                                    @(project.IsCompleted ? "Да" : "Нет")
+                                </td>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <td>
+                                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@project.IdProject">
+                                            <i class="fas fa-edit">
+                                            </i>
+                                            Редактировать
+                                        </a>
+                                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@project.IdProject">
+                                            <i class="fas fa-info-circle">
+                                            </i>
+                                            Подробности
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@project.IdProject">
+                                            <i class="fas fa-trash">
+                                            </i>
+                                            Удалить
+                                        </a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

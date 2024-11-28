@@ -1,22 +1,129 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #fff;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    margin-right: 15px;
+    transition: color 0.3s;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: #007bff;
+    }
+
+    .navbar-nav .nav-link.active {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+.btn-outline-primary {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+.card {
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+    footer a {
+        color: #ffc107;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.bg-gradient {
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .navbar-nav {
+        text-align: center;
+    }
+
+        .navbar-nav .nav-link {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+}
+
+.container {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border-radius: 10px;
+}
+
+.btn-primary {
+    background-color: #6a11cb;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #2575fc;
+    }
+
+.text-danger {
+    display: flex;
+    align-items: center;
+}
+
+    .text-danger i {
+        margin-right: 5px;
+    }
+
+.tooltip-inner {
+    background-color: #6a11cb;
+}
+
+.tooltip-arrow {
+    border-top-color: #6a11cb;
+}
+
+.modal-dialog {
+    color: black
 }
