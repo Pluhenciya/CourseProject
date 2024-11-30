@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AutodorInfoSystem.Controllers
 {
@@ -35,17 +36,25 @@ namespace AutodorInfoSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var CreateUser = new User
+                var createUser = new User
                 {
                     Login = user.Login,
                     Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
                 };
 
-                _context.Users.Add(CreateUser);
+                _context.Users.Add(createUser);
                 await _context.SaveChangesAsync();
-                return Redirect("~/");
+
+                var accessToken = _tokenService.CreateAccessToken(createUser);
+                var refreshToken = await _tokenService.CreateRefreshToken(createUser);
+
+                Response.Cookies.Append("AccessToken", accessToken);
+                Response.Cookies.Append("RefreshToken", refreshToken);
+
+                return RedirectToAction("Index", "Projects");
             }
-            return Redirect("~/");
+
+            return View();
         }
 
         public IActionResult Login()
@@ -62,7 +71,7 @@ namespace AutodorInfoSystem.Controllers
                 Password = password
             };
 
-            var userExist = _userService.UserVerify(user);
+            var userExist = await _userService.UserVerifyAsync(user);
 
             if (userExist == null)
             {
@@ -70,17 +79,76 @@ namespace AutodorInfoSystem.Controllers
                 return Redirect("~/");
             }
 
-            Response.Cookies.Append("A", _tokenService.CreateToken(userExist));
+            var accessToken = _tokenService.CreateAccessToken(userExist);
+            var refreshToken = await _tokenService.CreateRefreshToken(userExist);
+
+            Response.Cookies.Append("AccessToken", accessToken);
+            Response.Cookies.Append("RefreshToken", refreshToken);
 
             return RedirectToAction("Index", "Projects");
         }
 
         [HttpPost]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete("A");
+            var refreshToken = Request.Cookies["RefreshToken"];
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                var user = await _userService.GetUserByRefreshTokenAsync(refreshToken);
+                if (user != null)
+                {
+                    await RevokeRefreshTokenAsync(user, refreshToken);
+                }
+            }
+
+            Response.Cookies.Delete("AccessToken");
+            Response.Cookies.Delete("RefreshToken");
 
             return Redirect("~/");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["RefreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var principal = _tokenService.GetPrincipalFromExpiredToken(refreshToken);
+                var username = principal.Identity.Name;
+                var user = await _userService.GetUserByUsernameAsync(username);
+
+                if (user == null || user.RefreshTokens.Any(t => t.Token == refreshToken && t.IsRevoked))
+                {
+                    return Unauthorized();
+                }
+
+                var newAccessToken = _tokenService.CreateAccessToken(user);
+                var newRefreshToken = await _tokenService.CreateRefreshToken(user);
+
+                Response.Cookies.Append("AccessToken", newAccessToken);
+                Response.Cookies.Append("RefreshToken", newRefreshToken);
+
+                return Ok();
+            }
+            catch (SecurityTokenException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        private async System.Threading.Tasks.Task RevokeRefreshTokenAsync(User user, string refreshToken)
+        {
+            var token = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken && t.UserId == user.IdUser);
+            if (token != null)
+            {
+                token.IsRevoked = true;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

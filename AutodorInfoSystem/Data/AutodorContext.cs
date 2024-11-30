@@ -17,6 +17,7 @@ public partial class AutodorContext : DbContext
     {
     }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
     public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Equipment> Equipment { get; set; }

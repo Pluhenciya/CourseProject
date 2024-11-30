@@ -2,16 +2,22 @@
 using AutodorInfoSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading.Tasks;
 
 namespace AutodorInfoSystem.Services
 {
-    public class UserService(AutodorContext context)
+    public class UserService
     {
-        private readonly AutodorContext _dbContext = context;
+        private readonly AutodorContext _dbContext;
 
-        public User? UserVerify(User user)
+        public UserService(AutodorContext context)
         {
-            var userExist = _dbContext.Users.FirstOrDefault(u => u.Login == user.Login);
+            _dbContext = context;
+        }
+
+        public async Task<User?> UserVerifyAsync(User user)
+        {
+            var userExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == user.Login);
 
             if (userExist != null && BCrypt.Net.BCrypt.Verify(user.Password, userExist.Password))
             {
@@ -19,6 +25,17 @@ namespace AutodorInfoSystem.Services
             }
 
             return null;
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == username);
+        }
+
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            var token = await _dbContext.RefreshTokens.Include(t => t.User).FirstOrDefaultAsync(t => t.Token == refreshToken);
+            return token?.User;
         }
     }
 }

@@ -14,4 +14,6 @@ public partial class User
     public virtual Admin? Admin { get; set; }
 
     public virtual Projecter? Projecter { get; set; }
+    
+    public virtual IEnumerable<RefreshToken> RefreshTokens { get; set; }
 }

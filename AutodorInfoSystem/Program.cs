@@ -3,7 +3,6 @@ using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,7 +44,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            context.Token = context.Request.Cookies["A"];
+            context.Token = context.Request.Cookies["AccessToken"];
 
             return Task.CompletedTask;
         },
@@ -53,10 +52,22 @@ builder.Services.AddAuthentication(options =>
         {
             Console.WriteLine("Token is valid.");
             return Task.CompletedTask;
+        },
+        OnAuthenticationFailed = context =>
+        {
+            
+            return Task.CompletedTask;
         }
     };
 });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AutodorContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
