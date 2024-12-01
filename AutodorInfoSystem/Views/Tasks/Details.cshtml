@@ -10,26 +10,69 @@
     <h4>Task</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdProjectNavigation)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdProjectNavigation.IdProject)
         </dd>
     </dl>
 </div>
+
+<div>
+    <h4>Materials</h4>
+    <ul>
+        @foreach (var material in Model.MaterialsHasTasks)
+        {
+            <li>
+                @material.IdMaterialNavigation.Name
+                (Quantity: @material.Quantity, Price: @material.IdMaterialNavigation.Price)
+            </li>
+        }
+    </ul>
+    <a asp-controller="Materials" asp-action="Create" asp-route-taskId="@Model.IdTask">Add Material</a>
+</div>
+
+<div>
+    <h4>Equipment</h4>
+    <ul>
+        @foreach (var equipment in Model.EquipmentHasTasks)
+        {
+            <li>
+                @equipment.IdEquipmentNavigation.Name
+                (Quantity: @equipment.Quantity, Price: @equipment.IdEquipmentNavigation.Price)
+            </li>
+        }
+    </ul>
+    <a asp-controller="Equipments" asp-action="Create" asp-route-taskId="@Model.IdTask">Add Equipment</a>
+</div>
+
+<div>
+    <h4>Workers</h4>
+    <ul>
+        @foreach (var worker in Model.WorkersHasTasks)
+        {
+            <li>
+                @worker.IdWorkerNavigation.Name
+                (Quantity: @worker.Quantity, Salary: @worker.IdWorkerNavigation.Salary)
+            </li>
+        }
+    </ul>
+    <a asp-controller="Workers" asp-action="Create" asp-route-taskId="@Model.IdTask">Add Worker</a>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdTask">Edit</a> |
     <a asp-action="Index">Back to List</a>

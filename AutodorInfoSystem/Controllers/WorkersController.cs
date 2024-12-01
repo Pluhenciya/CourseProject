@@ -7,26 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
-using Microsoft.Build.Framework;
 
 namespace AutodorInfoSystem.Controllers
 {
-    public class MaterialsController : Controller
+    public class WorkersController : Controller
     {
         private readonly AutodorContext _context;
 
-        public MaterialsController(AutodorContext context)
+        public WorkersController(AutodorContext context)
         {
             _context = context;
         }
 
-        // GET: Materials
+        // GET: Workers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Materials.ToListAsync());
+            return View(await _context.Workers.ToListAsync());
         }
 
-        // GET: Materials/Details/5
+        // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,40 +33,40 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.IdMaterial == id);
-            if (material == null)
+            var worker = await _context.Workers
+                .FirstOrDefaultAsync(m => m.IdWorker == id);
+            if (worker == null)
             {
                 return NotFound();
             }
 
-            return View(material);
+            return View(worker);
         }
 
-        // GET: Materials/Create
+        // GET: Workers/Create
         public IActionResult Create(int idTask)
         {
             ViewBag.IdTask = idTask;
             return View();
         }
 
-        // POST: Materials/Create
+        // POST: Workers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdMaterial,Name,MeasurementUnit")] Material material)
+        public async Task<IActionResult> Create([Bind("IdWorker,Name,Salary")] Worker worker)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(material);
+                _context.Add(worker);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(material);
+            return View(worker);
         }
 
-        // GET: Materials/Edit/5
+        // GET: Workers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +74,22 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials.FindAsync(id);
-            if (material == null)
+            var worker = await _context.Workers.FindAsync(id);
+            if (worker == null)
             {
                 return NotFound();
             }
-            return View(material);
+            return View(worker);
         }
 
-        // POST: Materials/Edit/5
+        // POST: Workers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMaterial,Name,MeasurementUnit")] Material material)
+        public async Task<IActionResult> Edit(int id, [Bind("IdWorker,Name,Salary")] Worker worker)
         {
-            if (id != material.IdMaterial)
+            if (id != worker.IdWorker)
             {
                 return NotFound();
             }
@@ -99,12 +98,12 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(material);
+                    _context.Update(worker);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MaterialExists(material.IdMaterial))
+                    if (!WorkerExists(worker.IdWorker))
                     {
                         return NotFound();
                     }
@@ -115,10 +114,10 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(material);
+            return View(worker);
         }
 
-        // GET: Materials/Delete/5
+        // GET: Workers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +125,34 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.IdMaterial == id);
-            if (material == null)
+            var worker = await _context.Workers
+                .FirstOrDefaultAsync(m => m.IdWorker == id);
+            if (worker == null)
             {
                 return NotFound();
             }
 
-            return View(material);
+            return View(worker);
         }
 
-        // POST: Materials/Delete/5
+        // POST: Workers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-            if (material != null)
+            var worker = await _context.Workers.FindAsync(id);
+            if (worker != null)
             {
-                _context.Materials.Remove(material);
+                _context.Workers.Remove(worker);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MaterialExists(int id)
+        private bool WorkerExists(int id)
         {
-            return _context.Materials.Any(e => e.IdMaterial == id);
+            return _context.Workers.Any(e => e.IdWorker == id);
         }
     }
 }

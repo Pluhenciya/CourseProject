@@ -77,29 +77,29 @@ public partial class AutodorContext : DbContext
 
         modelBuilder.Entity<EquipmentHasTask>(entity =>
         {
-            entity.HasKey(e => new { e.EquipmentIdEquipment, e.TasksIdTask })
+            entity.HasKey(e => new { e.IdEquipment, e.IdTask })
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("equipment_has_tasks");
 
-            entity.HasIndex(e => e.EquipmentIdEquipment, "fk_equipment_has_tasks_equipment1_idx");
+            entity.HasIndex(e => e.IdEquipment, "fk_equipment_has_tasks_equipment1_idx");
 
-            entity.HasIndex(e => e.TasksIdTask, "fk_equipment_has_tasks_tasks1_idx");
+            entity.HasIndex(e => e.IdTask, "fk_equipment_has_tasks_tasks1_idx");
 
-            entity.Property(e => e.EquipmentIdEquipment).HasColumnName("equipment_id_equipment");
-            entity.Property(e => e.TasksIdTask).HasColumnName("tasks_id_task");
+            entity.Property(e => e.IdEquipment).HasColumnName("id_equipment");
+            entity.Property(e => e.IdTask).HasColumnName("id_task");
             entity.Property(e => e.Quantity)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("quantity");
 
-            entity.HasOne(d => d.EquipmentIdEquipmentNavigation).WithMany(p => p.EquipmentHasTasks)
-                .HasForeignKey(d => d.EquipmentIdEquipment)
+            entity.HasOne(d => d.IdEquipmentNavigation).WithMany(p => p.EquipmentHasTasks)
+                .HasForeignKey(d => d.IdEquipment)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_equipment_has_tasks_equipment1");
 
-            entity.HasOne(d => d.TasksIdTaskNavigation).WithMany(p => p.EquipmentHasTasks)
-                .HasForeignKey(d => d.TasksIdTask)
+            entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.EquipmentHasTasks)
+                .HasForeignKey(d => d.IdTask)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_equipment_has_tasks_tasks1");
         });
@@ -121,27 +121,27 @@ public partial class AutodorContext : DbContext
 
         modelBuilder.Entity<MaterialsHasTask>(entity =>
         {
-            entity.HasKey(e => new { e.MaterialsIdMaterial, e.TasksIdTask })
+            entity.HasKey(e => new { e.IdMaterial, e.IdTask })
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("materials_has_tasks");
 
-            entity.HasIndex(e => e.MaterialsIdMaterial, "fk_materials_has_tasks_materials1_idx");
+            entity.HasIndex(e => e.IdMaterial, "fk_materials_has_tasks_materials1_idx");
 
-            entity.HasIndex(e => e.TasksIdTask, "fk_materials_has_tasks_tasks1_idx");
+            entity.HasIndex(e => e.IdTask, "fk_materials_has_tasks_tasks1_idx");
 
-            entity.Property(e => e.MaterialsIdMaterial).HasColumnName("materials_id_material");
-            entity.Property(e => e.TasksIdTask).HasColumnName("tasks_id_task");
+            entity.Property(e => e.IdMaterial).HasColumnName("id_material");
+            entity.Property(e => e.IdTask).HasColumnName("id_task");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-            entity.HasOne(d => d.MaterialsIdMaterialNavigation).WithMany(p => p.MaterialsHasTasks)
-                .HasForeignKey(d => d.MaterialsIdMaterial)
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.MaterialsHasTasks)
+                .HasForeignKey(d => d.IdMaterial)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_materials_has_tasks_materials1");
 
-            entity.HasOne(d => d.TasksIdTaskNavigation).WithMany(p => p.MaterialsHasTasks)
-                .HasForeignKey(d => d.TasksIdTask)
+            entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.MaterialsHasTasks)
+                .HasForeignKey(d => d.IdTask)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_materials_has_tasks_tasks1");
         });
@@ -267,27 +267,27 @@ public partial class AutodorContext : DbContext
 
         modelBuilder.Entity<WorkersHasTask>(entity =>
         {
-            entity.HasKey(e => new { e.WorkersIdWorker, e.TasksIdTask })
+            entity.HasKey(e => new { e.IdWorker, e.IdTask })
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("workers_has_tasks");
 
-            entity.HasIndex(e => e.TasksIdTask, "fk_workers_has_tasks_tasks1_idx");
+            entity.HasIndex(e => e.IdTask, "fk_workers_has_tasks_tasks1_idx");
 
-            entity.HasIndex(e => e.WorkersIdWorker, "fk_workers_has_tasks_workers1_idx");
+            entity.HasIndex(e => e.IdWorker, "fk_workers_has_tasks_workers1_idx");
 
-            entity.Property(e => e.WorkersIdWorker).HasColumnName("workers_id_worker");
-            entity.Property(e => e.TasksIdTask).HasColumnName("tasks_id_task");
+            entity.Property(e => e.IdWorker).HasColumnName("id_worker");
+            entity.Property(e => e.IdTask).HasColumnName("id_task");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-            entity.HasOne(d => d.TasksIdTaskNavigation).WithMany(p => p.WorkersHasTasks)
-                .HasForeignKey(d => d.TasksIdTask)
+            entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.WorkersHasTasks)
+                .HasForeignKey(d => d.IdTask)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_workers_has_tasks_tasks1");
 
-            entity.HasOne(d => d.WorkersIdWorkerNavigation).WithMany(p => p.WorkersHasTasks)
-                .HasForeignKey(d => d.WorkersIdWorker)
+            entity.HasOne(d => d.IdWorkerNavigation).WithMany(p => p.WorkersHasTasks)
+                .HasForeignKey(d => d.IdWorker)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_workers_has_tasks_workers1");
         });

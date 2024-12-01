@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutodorInfoSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Models;
 
 namespace AutodorInfoSystem.Controllers
 {
@@ -36,6 +31,12 @@ namespace AutodorInfoSystem.Controllers
 
             var task = await _context.Tasks
                 .Include(t => t.IdProjectNavigation)
+                .Include(t => t.MaterialsHasTasks)
+                    .ThenInclude(m => m.IdMaterialNavigation)
+                .Include(t => t.EquipmentHasTasks)
+                    .ThenInclude(e => e.IdEquipmentNavigation)
+                .Include(t => t.WorkersHasTasks)
+                    .ThenInclude(w => w.IdWorkerNavigation)
                 .FirstOrDefaultAsync(m => m.IdTask == id);
             if (task == null)
             {
@@ -49,7 +50,7 @@ namespace AutodorInfoSystem.Controllers
         public IActionResult Create(int idProject)
         {
             ViewBag.IdProject = idProject;
-            return View( );
+            return View();
         }
 
         // POST: Tasks/Create
@@ -65,7 +66,7 @@ namespace AutodorInfoSystem.Controllers
             {
                 _context.Add(task);
                 await _context.SaveChangesAsync();
-                return  RedirectToAction("Details", "Projects", task.IdProject); ;
+                return RedirectToAction("Details", "Projects", task.IdProject); ;
             }
             return View();
         }
