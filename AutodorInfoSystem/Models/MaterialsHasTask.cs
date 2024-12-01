@@ -5,13 +5,13 @@ namespace AutodorInfoSystem.Models;
 
 public partial class MaterialsHasTask
 {
-    public int MaterialsIdMaterial { get; set; }
+    public int IdMaterial { get; set; }
 
-    public int TasksIdTask { get; set; }
+    public int IdTask { get; set; }
 
     public int Quantity { get; set; }
 
-    public virtual Material MaterialsIdMaterialNavigation { get; set; } = null!;
+    public virtual Material IdMaterialNavigation { get; set; } = null!;
 
-    public virtual Task TasksIdTaskNavigation { get; set; } = null!;
+    public virtual Task IdTaskNavigation { get; set; } = null!;
 }

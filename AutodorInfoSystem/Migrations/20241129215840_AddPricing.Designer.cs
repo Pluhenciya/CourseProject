@@ -3,6 +3,7 @@ using AutodorInfoSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutodorInfoSystem.Migrations
 {
     [DbContext(typeof(AutodorContext))]
-    partial class AutodorContextModelSnapshot : ModelSnapshot
+    [Migration("20241129215840_AddPricing")]
+    partial class AddPricing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,9 +53,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("float")
-                        .HasColumnName("price");
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.HasKey("IdEquipment")
                         .HasName("PRIMARY");
@@ -107,9 +109,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("float")
-                        .HasColumnName("price");
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.HasKey("IdMaterial")
                         .HasName("PRIMARY");
@@ -279,9 +280,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Salary")
-                        .HasColumnType("float")
-                        .HasColumnName("salary");
+                    b.Property<int>("Salary")
+                        .HasColumnType("int");
 
                     b.HasKey("IdWorker")
                         .HasName("PRIMARY");

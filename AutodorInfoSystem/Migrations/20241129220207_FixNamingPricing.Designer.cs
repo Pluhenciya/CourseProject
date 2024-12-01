@@ -3,6 +3,7 @@ using AutodorInfoSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutodorInfoSystem.Migrations
 {
     [DbContext(typeof(AutodorContext))]
-    partial class AutodorContextModelSnapshot : ModelSnapshot
+    [Migration("20241129220207_FixNamingPricing")]
+    partial class FixNamingPricing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +53,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("float")
+                    b.Property<int>("Price")
+                        .HasColumnType("int")
                         .HasColumnName("price");
 
                     b.HasKey("IdEquipment")
@@ -107,8 +110,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("float")
+                    b.Property<int>("Price")
+                        .HasColumnType("int")
                         .HasColumnName("price");
 
                     b.HasKey("IdMaterial")
@@ -279,8 +282,8 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
 
-                    b.Property<float>("Salary")
-                        .HasColumnType("float")
+                    b.Property<int>("Salary")
+                        .HasColumnType("int")
                         .HasColumnName("salary");
 
                     b.HasKey("IdWorker")

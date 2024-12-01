@@ -5,13 +5,13 @@ namespace AutodorInfoSystem.Models;
 
 public partial class EquipmentHasTask
 {
-    public int EquipmentIdEquipment { get; set; }
+    public int IdEquipment { get; set; }
 
-    public int TasksIdTask { get; set; }
+    public int IdTask { get; set; }
 
     public int Quantity { get; set; }
 
-    public virtual Equipment EquipmentIdEquipmentNavigation { get; set; } = null!;
+    public virtual Equipment IdEquipmentNavigation { get; set; } = null!;
 
-    public virtual Task TasksIdTaskNavigation { get; set; } = null!;
+    public virtual Task IdTaskNavigation { get; set; } = null!;
 }
