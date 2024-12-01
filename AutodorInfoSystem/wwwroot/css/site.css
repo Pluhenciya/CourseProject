@@ -43,11 +43,12 @@ header {
     transition: transform 0.3s;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: black;
 }
 
-.card:hover {
-    transform: scale(1.01);
-}
+    .card:hover {
+        transform: scale(1.01);
+    }
 
 footer {
     background-color: #343a40;
@@ -56,14 +57,14 @@ footer {
     margin-top: auto;
 }
 
-footer a {
-    color: #ffc107;
-    text-decoration: none;
-}
+    footer a {
+        color: #ffc107;
+        text-decoration: none;
+    }
 
-footer a:hover {
-    text-decoration: underline;
-}
+        footer a:hover {
+            text-decoration: underline;
+        }
 
 .modal-content {
     border-radius: 10px;
@@ -79,10 +80,10 @@ footer a:hover {
         text-align: center;
     }
 
-    .navbar-nav .nav-link {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
+        .navbar-nav .nav-link {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
 }
 
 .container {
@@ -103,18 +104,18 @@ footer a:hover {
     transition: background-color 0.3s;
 }
 
-.btn-primary:hover {
-    background-color: #2575fc;
-}
+    .btn-primary:hover {
+        background-color: #2575fc;
+    }
 
 .text-danger {
     display: flex;
     align-items: center;
 }
 
-.text-danger i {
-    margin-right: 5px;
-}
+    .text-danger i {
+        margin-right: 5px;
+    }
 
 .tooltip-inner {
     background-color: #6a11cb;
@@ -125,5 +126,28 @@ footer a:hover {
 }
 
 .modal-dialog {
-    color: black
+    color: black;
+}
+
+.details-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+    .details-header h4 {
+        margin-bottom: 0;
+    }
+
+.details-actions a {
+    margin-right: 10px;
+}
+
+    .details-actions a:last-child {
+        margin-right: 0;
+    }
+
+.tasks-table th, .tasks-table td {
+    vertical-align: middle;
 }
