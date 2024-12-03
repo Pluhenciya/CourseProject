@@ -46,7 +46,7 @@
     @if (User.Identity.IsAuthenticated)
     {
             <div class="details-actions mt-3">
-                <a class="btn btn-success" asp-controller="Materials" asp-action="Create" asp-route-taskId="@Model.IdTask">
+                <a class="btn btn-success" asp-controller="Materials" asp-action="Create" asp-route-idTask="@Model.IdTask">
                     <i class="fas fa-plus-circle"></i> Добавить материал
                 </a>
             </div>
@@ -94,8 +94,8 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div class="details-actions mt-3">
-                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create" asp-route-taskId="@Model.IdTask">
-                    <i class="fas fa-plus-circle"></i> Добавить материал
+                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create" asp-route-idTask="@Model.IdTask">
+                    <i class="fas fa-plus-circle"></i> Добавить спецтехнику
                 </a>
             </div>
         }
@@ -142,8 +142,8 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div class="details-actions mt-3">
-                <a class="btn btn-success" asp-controller="Workers" asp-action="Create" asp-route-taskId="@Model.IdTask">
-                    <i class="fas fa-plus-circle"></i> Добавить материал
+                <a class="btn btn-success" asp-controller="Workers" asp-action="Create" asp-route-idTask="@Model.IdTask">
+                    <i class="fas fa-plus-circle"></i> Добавить рабочего
                 </a>
             </div>
         }

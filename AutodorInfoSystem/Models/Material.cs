@@ -15,5 +15,8 @@ public partial class Material
     [Column("price")]
     public double Price { get; set; }
 
+    [NotMapped]
+    public int Quantity { get; set; }
+
     public virtual ICollection<MaterialsHasTask> MaterialsHasTasks { get; set; } = new List<MaterialsHasTask>();
 }

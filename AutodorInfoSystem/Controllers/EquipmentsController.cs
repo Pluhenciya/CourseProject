@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AutodorInfoSystem.Data;
+﻿using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutodorInfoSystem.Controllers
 {
@@ -17,6 +12,21 @@ namespace AutodorInfoSystem.Controllers
         public EquipmentsController(AutodorContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public JsonResult GetSimilarNames(string name)
+        {
+            var similarItems = _context.Equipment
+                .Where(e => e.Name.Contains(name))
+                .Select(e => new
+                {
+                    e.Name,
+                    e.Price // Возвращаем также цену
+                })
+                .ToList();
+
+            return Json(similarItems);
         }
 
         // GET: Equipments
@@ -55,13 +65,34 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEquipment,Name")] Equipment equipment)
+        public async Task<IActionResult> Create(Equipment equipment, int idTask)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(equipment);
+                var findEquipment = await _context.Equipment.FirstOrDefaultAsync(e => e.Name == equipment.Name);
+                if (findEquipment != null)
+                {
+                    _context.Add(new EquipmentHasTask
+                    {
+                        IdTask = idTask,
+                        IdEquipment = findEquipment.IdEquipment,
+                        Quantity = equipment.Quantity,
+                    });
+                }
+                else
+                {
+                    _context.Equipment.Add(equipment);
+                    await _context.SaveChangesAsync();
+                    var idEquipment = _context.Equipment.FirstOrDefault(e => e.Name == equipment.Name).IdEquipment;
+                    _context.EquipmentHasTasks.Add(new EquipmentHasTask
+                    {
+                        IdTask = idTask,
+                        IdEquipment = idEquipment,
+                        Quantity = equipment.Quantity
+                    });
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", equipment.EquipmentHasTasks.LastOrDefault().IdTask); ;
+                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
             }
             return View(equipment);
         }

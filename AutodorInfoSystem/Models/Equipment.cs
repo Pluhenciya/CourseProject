@@ -13,5 +13,8 @@ public partial class Equipment
     [Column("price")]
     public double Price { get; set; }
 
+    [NotMapped]
+    public int Quantity { get; set; }
+
     public virtual ICollection<EquipmentHasTask> EquipmentHasTasks { get; set; } = new List<EquipmentHasTask>();
 }
