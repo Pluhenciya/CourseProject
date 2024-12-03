@@ -6,13 +6,13 @@
 
 <div class="container mt-4">
     <div class="details-header">
-        <h4>Детали проекта</h4>
+        <h4>Детали проекта "@Model.Name"</h4>
     </div>
     <div class="card bg-light text-dark">
         <div class="card-body">
             <dl class="row">
                 <dt class="col-sm-2">
-                    Название проекта
+                    Название проекта    
                 </dt>
                 <dd class="col-sm-10">
                     @Html.DisplayFor(model => model.Name)
@@ -66,26 +66,17 @@
                         <tr>
                             <th>Название задачи</th>
                             <th>Описание задачи</th>
-                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var task in Model.Tasks)
                         {
-                            <tr>
+                            <tr onclick="location.href='@Url.Action("Details", "Tasks", new { id = task.IdTask })'" style="cursor: pointer;">
                                 <td>
                                     @Html.DisplayFor(modelItem => task.Name)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => task.Description)
-                                </td>
-                                <td>
-                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-controller="Tasks" asp-route-id="@task.IdTask">
-                                        <i class="fas fa-info-circle"></i> Просмотреть
-                                    </a>
-                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-controller="Tasks" asp-route-id="@task.IdTask">
-                                        <i class="fas fa-edit"></i> Редактировать
-                                    </a>
                                 </td>
                             </tr>
                         }
