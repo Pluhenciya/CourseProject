@@ -84,7 +84,6 @@ namespace AutodorInfoSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectsIdProject"] = new SelectList(_context.Projects, "IdProject", "IdProject", task.IdProject);
             return View(task);
         }
 
@@ -120,43 +119,21 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectsIdProject"] = new SelectList(_context.Projects, "IdProject", "IdProject", task.IdProject);
             return View(task);
         }
 
         // GET: Tasks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+			var task = await _context.Tasks.FindAsync(id);
+			if (task != null)
+			{
+				_context.Tasks.Remove(task);
+			}
 
-            var task = await _context.Tasks
-                .Include(t => t.IdProjectNavigation)
-                .FirstOrDefaultAsync(m => m.IdTask == id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return View(task);
-        }
-
-        // POST: Tasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task != null)
-            {
-                _context.Tasks.Remove(task);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Details", "Projects", new { id = task.IdProject });
+		}
 
         private bool TaskExists(int id)
         {

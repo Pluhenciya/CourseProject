@@ -35,22 +35,17 @@ namespace AutodorInfoSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var CreateUser = new User
+                var createdUser = new User
                 {
                     Login = user.Login,
                     Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
                 };
 
-                _context.Users.Add(CreateUser);
+                _context.Users.Add(createdUser);
                 await _context.SaveChangesAsync();
                 return Redirect("~/");
             }
             return Redirect("~/");
-        }
-
-        public IActionResult Login()
-        {
-            return PartialView();
         }
 
         [HttpPost]
@@ -75,7 +70,6 @@ namespace AutodorInfoSystem.Controllers
             return RedirectToAction("Index", "Projects");
         }
 
-        [HttpPost]
         public IActionResult Logout()
         {
             Response.Cookies.Delete("A");
