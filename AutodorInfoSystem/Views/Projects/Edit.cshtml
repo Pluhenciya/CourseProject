@@ -1,16 +1,14 @@
 ﻿@model AutodorInfoSystem.Models.Project
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = Model.Name;
 }
 
-<h1 class="mb-4">Редактировать проект</h1>
+<h1 class="mb-4">Редактировние проекта</h1>
 
 <div class="card p-4">
-    <h4 class="mb-3">Проект</h4>
-    <hr />
     <div class="row">
-        <div class="col-md-4">
+        <div class="col">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="IdProject" />
@@ -21,7 +19,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="Description">Описание</label>
-                    <input asp-for="Description" class="form-control" />
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-group form-check">
@@ -30,7 +28,11 @@
                     <span asp-validation-for="IsCompleted" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Сохранить" class="btn btn-primary" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-check">
+                        </i>
+                        Сохранить
+                    </button>
                 </div>
             </form>
         </div>

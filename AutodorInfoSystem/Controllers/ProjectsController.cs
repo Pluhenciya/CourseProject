@@ -57,6 +57,8 @@ namespace AutodorInfoSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdProject,Name,Description,IsCompleted")] Project project)
         {
+            ModelState.Remove("IdProject");
+
             if (ModelState.IsValid)
             {
                 _context.Add(project);
@@ -119,26 +121,6 @@ namespace AutodorInfoSystem.Controllers
 
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(m => m.IdProject == id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return View(project);
-        }
-
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var project = await _context.Projects.FindAsync(id);
             if (project != null)
