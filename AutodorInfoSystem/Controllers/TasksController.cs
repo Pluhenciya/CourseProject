@@ -66,7 +66,7 @@ namespace AutodorInfoSystem.Controllers
             {
                 _context.Add(task);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Projects", task.IdProject); ;
+                return RedirectToAction("Details", "Projects", new { id = task.IdProject }); ;
             }
             return View();
         }
