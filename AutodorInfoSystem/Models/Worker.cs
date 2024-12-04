@@ -13,5 +13,8 @@ public partial class Worker
     [Column("salary")]
     public double Salary { get; set; }
 
+    [NotMapped]
+    public int Quantity { get; set; }
+
     public virtual ICollection<WorkersHasTask> WorkersHasTasks { get; set; } = new List<WorkersHasTask>();
 }

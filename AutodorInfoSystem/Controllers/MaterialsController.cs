@@ -20,6 +20,21 @@ namespace AutodorInfoSystem.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public JsonResult GetSimilarNames(string name)
+        {
+            var similarItems = _context.Materials
+                .Where(e => e.Name.Contains(name))
+                .Select(e => new
+                {
+                    e.Name,
+                    e.Price // Возвращаем также цену
+                })
+                .ToList();
+
+            return Json(similarItems);
+        }
+
         // GET: Materials
         public async Task<IActionResult> Index()
         {
@@ -56,13 +71,34 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdMaterial,Name,MeasurementUnit")] Material material)
+        public async Task<IActionResult> Create(Material material, int idTask)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(material);
+                var findMaterial = await _context.Materials.FirstOrDefaultAsync(e => e.Name == material.Name);
+                if (findMaterial != null)
+                {
+                    _context.Add(new MaterialsHasTask
+                    {
+                        IdTask = idTask,
+                        IdMaterial = findMaterial.IdMaterial,
+                        Quantity = material.Quantity,
+                    });
+                }
+                else
+                {
+                    _context.Materials.Add(material);
+                    await _context.SaveChangesAsync();
+                    var idMaterial = _context.Materials.FirstOrDefault(m => m.Name == material.Name).IdMaterial;
+                    _context.MaterialsHasTasks.Add(new MaterialsHasTask
+                    {
+                        IdTask = idTask,
+                        IdMaterial = idMaterial,
+                        Quantity = material.Quantity
+                    });
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
             }
             return View(material);
         }

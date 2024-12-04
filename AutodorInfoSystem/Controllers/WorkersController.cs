@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
+using Microsoft.Build.Framework;
 
 namespace AutodorInfoSystem.Controllers
 {
@@ -17,6 +18,21 @@ namespace AutodorInfoSystem.Controllers
         public WorkersController(AutodorContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public JsonResult GetSimilarNames(string name)
+        {
+            var similarItems = _context.Workers
+                .Where(e => e.Name.Contains(name))
+                .Select(e => new
+                {
+                    e.Name,
+                    e.Salary // Возвращаем также цену
+                })
+                .ToList();
+
+            return Json(similarItems);
         }
 
         // GET: Workers
@@ -55,13 +71,34 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdWorker,Name,Salary")] Worker worker)
+        public async Task<IActionResult> Create(Worker worker, int idTask)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(worker);
+                var findWorker = await _context.Workers.FirstOrDefaultAsync(e => e.Name == worker.Name);
+                if (findWorker != null)
+                {
+                    _context.Add(new WorkersHasTask
+                    {
+                        IdTask = idTask,
+                        IdWorker = findWorker.IdWorker,
+                        Quantity = worker.Quantity,
+                    });
+                }
+                else
+                {
+                    _context.Workers.Add(worker);
+                    await _context.SaveChangesAsync();
+                    var idWorker = _context.Workers.FirstOrDefault(e => e.Name == worker.Name).IdWorker;
+                    _context.WorkersHasTasks.Add(new WorkersHasTask
+                    {
+                        IdTask = idTask,
+                        IdWorker = idWorker,
+                        Quantity = worker.Quantity
+                    });
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
             }
             return View(worker);
         }
