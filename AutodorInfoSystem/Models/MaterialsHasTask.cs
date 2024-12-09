@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AutodorInfoSystem.Models;
 
@@ -10,6 +11,9 @@ public partial class MaterialsHasTask
     public int IdTask { get; set; }
 
     public int Quantity { get; set; }
+
+    [Column("cost")]
+    public double Cost { get; set; }
 
     public virtual Material IdMaterialNavigation { get; set; } = null!;
 

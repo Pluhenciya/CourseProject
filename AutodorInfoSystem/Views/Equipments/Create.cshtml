@@ -35,7 +35,7 @@
                     </button>
 				</div>
                 <div class="mt-3">
-					<a asp-action="Index" class="btn btn-outline-primary">
+                    <a asp-controller="Tasks" asp-action="Details" asp-route-id="@ViewBag.IdTask" class="btn btn-outline-primary">
 						<i class="fas fa-arrow-left"></i>
 						Назад
 					</a>
@@ -48,9 +48,9 @@
 @section Scripts {
     <script>
         function fetchSimilarNames() {
-            const nameInput = document.getElementById('materialName').value;
+            const nameInput = document.getElementById('equipmentName').value;
             const suggestionsList = document.getElementById('suggestions');
-            const priceInput = document.getElementById('materialPrice');
+            const priceInput = document.getElementById('equipmentPrice');
 
             if (nameInput.length === 0) {
                 suggestionsList.style.display = 'none';
@@ -58,7 +58,7 @@
                 return;
             }
 
-            fetch(`/Materials/GetSimilarNames?name=${nameInput}`)
+            fetch(`/Equipments/GetSimilarNames?name=${nameInput}`)
                 .then(response => response.json())
                 .then(data => {
                     suggestionsList.innerHTML = '';
@@ -70,7 +70,7 @@
                             li.textContent = item.name; // Предполагается, что item содержит объект с полем name
                             li.dataset.price = item.price; // Сохраняем цену в атрибуте data-price
                             li.onclick = function () {
-                                document.getElementById('materialName').value = item.name;
+                                document.getElementById('equipmentName').value = item.name;
                                 priceInput.value = item.price; // Заполняем цену
                                 suggestionsList.style.display = 'none';
                                 priceInput.setAttribute('readonly', 'readonly'); // Делаем поле цены недоступным для редактирования
@@ -85,8 +85,8 @@
         }
 
         // Сбросить поле цены, если пользователь вводит новое название
-        document.getElementById('materialName').addEventListener('input', function () {
-            const priceInput = document.getElementById('materialPrice');
+        document.getElementById('equipmentName').addEventListener('input', function () {
+            const priceInput = document.getElementById('equipmentPrice');
             priceInput.removeAttribute('readonly'); // Делаем поле цены доступным для редактирования
             priceInput.value = ''; // Очищаем цену
         });

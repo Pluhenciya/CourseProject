@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AutodorInfoSystem.Models;
 
@@ -14,6 +15,9 @@ public partial class Project
     public string? Description { get; set; } = null!;
 
     public bool IsCompleted { get; set; }
+
+    [Column("cost")]
+    public double Cost { get; set; }
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 

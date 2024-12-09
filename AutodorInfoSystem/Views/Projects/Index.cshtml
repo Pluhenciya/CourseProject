@@ -23,6 +23,7 @@
                                 <th scope="col">Название проекта</th>
                                 <th scope="col">Описание проекта</th>
                                 <th scope="col">Завершен</th>
+                                <th scope="col">Стоимость проекта</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,7 @@
                                     <td>@project.Name</td>
                                     <td>@project.Description</td>
                                     <td>@(project.IsCompleted ? "Да" : "Нет")</td>
+                                    <td>@project.Cost руб.</td>
                                 </tr>
                             }
                         </tbody>

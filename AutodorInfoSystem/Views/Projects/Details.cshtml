@@ -66,6 +66,7 @@
                         <tr>
                             <th>Название задачи</th>
                             <th>Описание задачи</th>
+                            <th>Стоимость задачи</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,6 +78,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => task.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => task.Cost) руб.
                                 </td>
                             </tr>
                         }
