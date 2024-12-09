@@ -61,6 +61,7 @@
                                 <th>Название материала</th>
                                 <th>Количество</th>
                                 <th>Цена</th>
+                                <th>Стоимость</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,7 +75,10 @@
                                         @Html.DisplayFor(modelItem => material.Quantity) @Html.DisplayFor(modelItem => material.IdMaterialNavigation.MeasurementUnit)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Price)
+                                        @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Price) руб.
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => material.Cost) руб.
                                     </td>
                                 </tr>
                             }
@@ -109,6 +113,7 @@
                                 <th>Название спецтехники</th>
                                 <th>Количество </th>
                                 <th>Цена</th>
+                                <th>Стоимость</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -122,7 +127,10 @@
                                         @Html.DisplayFor(modelItem => equipment.Quantity) шт
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Price)
+                                        @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Price) руб.
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => equipment.Cost) руб.
                                     </td>
                                 </tr>
                             }
@@ -154,9 +162,10 @@
                     <table class="table table-striped table-hover tasks-table">
                         <thead>
                             <tr>
-                                <th>Название спецтехники</th>
-                                <th>Количество </th>
-                                <th>Цена</th>
+                                <th>Должность</th>
+                                <th>Количество</th>
+                                <th>Зарплата</th>
+                                <th>Стоимость</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,7 +179,10 @@
                                         @Html.DisplayFor(modelItem => worker.Quantity)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Salary)
+                                        @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Salary) руб.
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => worker.Cost) руб.
                                     </td>
                                 </tr>
                             }
