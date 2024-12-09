@@ -157,26 +157,6 @@ namespace AutodorInfoSystem.Controllers
         // GET: Workers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var worker = await _context.Workers
-                .FirstOrDefaultAsync(m => m.IdWorker == id);
-            if (worker == null)
-            {
-                return NotFound();
-            }
-
-            return View(worker);
-        }
-
-        // POST: Workers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             var worker = await _context.Workers.FindAsync(id);
             if (worker != null)
             {

@@ -67,7 +67,7 @@ namespace AutodorInfoSystem.Controllers
 
             Response.Cookies.Append("A", _tokenService.CreateToken(userExist));
 
-            return RedirectToAction("Index", "Projects");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         public IActionResult Logout()

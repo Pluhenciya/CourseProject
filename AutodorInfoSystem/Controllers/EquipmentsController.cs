@@ -151,26 +151,6 @@ namespace AutodorInfoSystem.Controllers
         // GET: Equipments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var equipment = await _context.Equipment
-                .FirstOrDefaultAsync(m => m.IdEquipment == id);
-            if (equipment == null)
-            {
-                return NotFound();
-            }
-
-            return View(equipment);
-        }
-
-        // POST: Equipments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             var equipment = await _context.Equipment.FindAsync(id);
             if (equipment != null)
             {

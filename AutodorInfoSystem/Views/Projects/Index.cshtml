@@ -8,9 +8,9 @@
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center mb-4">Проекты</h2>
-                @if (User.Identity.IsAuthenticated)
-                {
-                <a class="btn btn-primary mb-3" asp-action="Create">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-success mb-3" asp-action="Create">
                     <i class="fas fa-plus-circle"></i>
                     Создать новый
                 </a>
@@ -24,6 +24,8 @@
                                 <th scope="col">Описание проекта</th>
                                 <th scope="col">Завершен</th>
                                 <th scope="col">Стоимость проекта</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,6 +36,19 @@
                                     <td>@project.Description</td>
                                     <td>@(project.IsCompleted ? "Да" : "Нет")</td>
                                     <td>@project.Cost руб.</td>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <td>
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Projects" asp-route-id="@project.IdProject">
+                                                <i class="fas fa-edit"></i>
+											</a>
+										</td>
+                                        <td>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Projects" asp-route-id="@project.IdProject" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>

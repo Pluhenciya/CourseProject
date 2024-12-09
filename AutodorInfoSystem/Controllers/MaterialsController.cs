@@ -155,36 +155,16 @@ namespace AutodorInfoSystem.Controllers
         }
 
         // GET: Materials/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int idTask)
         {
-            if (id == null)
+            var materialsHasTask = await _context.MaterialsHasTasks.FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdMaterial == id);
+            if (materialsHasTask != null)
             {
-                return NotFound();
-            }
-
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.IdMaterial == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
-        }
-
-        // POST: Materials/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var material = await _context.Materials.FindAsync(id);
-            if (material != null)
-            {
-                _context.Materials.Remove(material);
+                _context.MaterialsHasTasks.Remove(materialsHasTask);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
         }
 
         private bool MaterialExists(int id)

@@ -119,7 +119,7 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(task);
+            return RedirectToAction("Details", "Projects", new { id = task.IdProject });
         }
 
         // GET: Tasks/Delete/5

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
+using System.Security.Claims;
 
 namespace AutodorInfoSystem.Controllers
 {
@@ -22,7 +23,17 @@ namespace AutodorInfoSystem.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projects.ToListAsync());
+            if (User.Identity.IsAuthenticated)
+            { 
+                string temp = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                return View(await _context.Projects
+                    .Include(p => p.ProjectersIdUsers)
+                    .Where(p => p.ProjectersIdUsers
+                    .Any(p => p.IdUser == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
+                    .ToListAsync());
+            }
+            else
+                return View(await _context.Projects.ToListAsync());
         }
 
         // GET: Projects/Details/5
@@ -61,6 +72,7 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                project.ProjectersIdUsers.Add(_context.Projecters.Find(Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)));
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
