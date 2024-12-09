@@ -62,12 +62,14 @@
                                 <th>Количество</th>
                                 <th>Цена</th>
                                 <th>Стоимость</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var material in Model.MaterialsHasTasks)
                             {
-                                <tr onclick="location.href='@Url.Action("Details", "Materials", new { id = material.IdMaterial })'" style="cursor: pointer;">
+                                <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Name)
                                     </td>
@@ -80,6 +82,19 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => material.Cost) руб.
                                     </td>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <td>
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Materials" asp-route-idTask="@Model.IdTask" asp-route-id="@material.IdMaterial" onclick="return confirm('Вы уверены, что хотите удалить этот материал?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -98,7 +113,7 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div class="details-actions mt-3">
-                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create" asp-route-idTask="@Model.IdTask">
+                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create"  asp-route-idTask="@Model.IdTask">
                     <i class="fas fa-plus-circle"></i> Добавить спецтехнику
                 </a>
             </div>
@@ -114,12 +129,14 @@
                                 <th>Количество </th>
                                 <th>Цена</th>
                                 <th>Стоимость</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var equipment in Model.EquipmentHasTasks)
                             {
-                                <tr onclick="location.href='@Url.Action("Details", "Equipments", new { id = equipment.IdEquipment })'" style="cursor: pointer;">
+                                <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Name)
                                     </td>
@@ -132,6 +149,19 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => equipment.Cost) руб.
                                     </td>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <td>
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Equipments" asp-route-idTask="@Model.IdTask" asp-route-id="@equipment.IdEquipment" onclick="return confirm('Вы уверены, что хотите удалить эту спецтехнику?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -166,12 +196,14 @@
                                 <th>Количество</th>
                                 <th>Зарплата</th>
                                 <th>Стоимость</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var worker in Model.WorkersHasTasks)
                             {
-                                <tr onclick="location.href='@Url.Action("Details", "Workers", new { id = worker.IdWorker })'" style="cursor: pointer;">
+                                <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Name)
                                     </td>
@@ -184,6 +216,19 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => worker.Cost) руб.
                                     </td>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <td>
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Workers" asp-route-idTask="@Model.IdTask" asp-route-id="@worker.IdWorker" onclick="return confirm('Вы уверены, что хотите удалить этого рабочего?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>
