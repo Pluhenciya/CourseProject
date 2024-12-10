@@ -92,13 +92,13 @@ namespace AutodorInfoSystem.Controllers
                     });
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             return View(equipment);
         }
 
         // GET: Equipments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int idTask)
         {
             if (id == null)
             {
@@ -110,6 +110,8 @@ namespace AutodorInfoSystem.Controllers
             {
                 return NotFound();
             }
+            ViewBag.IdTask = idTask;
+            equipment.Quantity = _context.EquipmentHasTasks.FirstOrDefault(wht => wht.IdTask == idTask && wht.IdEquipment == equipment.IdEquipment).Quantity;
             return View(equipment);
         }
 
@@ -118,7 +120,7 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEquipment,Name")] Equipment equipment)
+        public async Task<IActionResult> Edit(int id, Equipment equipment, int idTask)
         {
             if (id != equipment.IdEquipment)
             {
@@ -129,7 +131,28 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(equipment);
+                    var findEquipment = await _context.Equipment.FirstOrDefaultAsync(e => e.Name == equipment.Name);
+                    if (findEquipment != null)
+                    {
+                        _context.Update(new EquipmentHasTask
+                        {
+                            IdTask = idTask,
+                            IdEquipment = findEquipment.IdEquipment,
+                            Quantity = equipment.Quantity
+                        });
+                    }
+                    else
+                    {
+                        _context.Equipment.Update(equipment);
+                        await _context.SaveChangesAsync();
+                        var idEquipment = _context.Equipment.FirstOrDefault(e => e.Name == equipment.Name).IdEquipment;
+                        _context.EquipmentHasTasks.Update(new EquipmentHasTask
+                        {
+                            IdTask = idTask,
+                            IdEquipment = idEquipment,
+                            Quantity = equipment.Quantity
+                        });
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -143,22 +166,22 @@ namespace AutodorInfoSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             return View(equipment);
         }
 
         // GET: Equipments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int idTask)
         {
-            var equipment = await _context.Equipment.FindAsync(id);
-            if (equipment != null)
+            var equipmentHasTask = await _context.EquipmentHasTasks.FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdEquipment == id);
+            if (equipmentHasTask != null)
             {
-                _context.Equipment.Remove(equipment);
+                _context.EquipmentHasTasks.Remove(equipmentHasTask);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
         }
 
         private bool EquipmentExists(int id)

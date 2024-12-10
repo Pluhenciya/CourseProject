@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8" />
@@ -7,7 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AutodorInfoSystem.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
 </head>
 <body>
     <header>
@@ -17,39 +18,47 @@
                     АДИС
                 </a>
                 <button aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию" class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
-                    <span class="navbar-toggler-icon">
-                    </span>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link text-dark active" asp-controller="Projects" asp-action="Index">
-                                <i class="fas fa-project-diagram">
-                                </i>
-                                Проекты
+                                <i class="fas fa-project-diagram"></i>
+								Проекты
                             </a>
                         </li>
                     </ul>
-                        <ul class="navbar-nav">
-						<li class="nav-item">
-							@if (!User.Identity.IsAuthenticated)
-							{
+                    @if(User.IsInRole("Admin"))
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark active" asp-controller="Users" asp-action="Index">
+                                    <i class="fa-solid fa-user"></i>
+                                    Пользователи
+                                </a>
+                            </li>
+						</ul>
+					}
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Используйте ms-auto для выравнивания вправо -->
+                        <li class="nav-item">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
                                 <a class="btn btn-outline-primary" data-bs-target="#loginModal" data-bs-toggle="modal" href="#">
-                                    <i class="fas fa-sign-in-alt">
-                                    </i>
+                                    <i class="fas fa-sign-in-alt"></i>
                                     Войти
                                 </a>
                             }
                             else
                             {
                                 <a class="btn btn-outline-danger" asp-action="Logout" asp-controller="Users" onclick="return confirm('Вы уверены, что хотите выйти?')">
-                                    <i class="fas fa-sign-out-alt">
-                                    </i>
+                                    <i class="fas fa-sign-out-alt"></i>
                                     Выйти
                                 </a>
                             }
-                            </li>
-                        </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

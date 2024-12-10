@@ -98,13 +98,13 @@ namespace AutodorInfoSystem.Controllers
                     });
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
+                return RedirectToAction("Details", "Tasks", new { id = idTask }); 
             }
             return View(worker);
         }
 
         // GET: Workers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int  idTask)
         {
             if (id == null)
             {
@@ -116,6 +116,8 @@ namespace AutodorInfoSystem.Controllers
             {
                 return NotFound();
             }
+            ViewBag.IdTask = idTask;
+            worker.Quantity = _context.WorkersHasTasks.FirstOrDefault(mht => mht.IdTask == idTask && mht.IdWorker == worker.IdWorker).Quantity;
             return View(worker);
         }
 
@@ -124,7 +126,7 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdWorker,Name,Salary")] Worker worker)
+        public async Task<IActionResult> Edit(int id, Worker worker, int idTask)
         {
             if (id != worker.IdWorker)
             {
@@ -135,7 +137,28 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(worker);
+                    var findWorker = await _context.Workers.FirstOrDefaultAsync(e => e.Name == worker.Name);
+                    if (findWorker != null)
+                    {
+                        _context.Add(new WorkersHasTask
+                        {
+                            IdTask = idTask,
+                            IdWorker = findWorker.IdWorker,
+                            Quantity = worker.Quantity,
+                        });
+                    }
+                    else
+                    {
+                        _context.Workers.Add(worker);
+                        await _context.SaveChangesAsync();
+                        var idWorker = _context.Workers.FirstOrDefault(e => e.Name == worker.Name).IdWorker;
+                        _context.WorkersHasTasks.Add(new WorkersHasTask
+                        {
+                            IdTask = idTask,
+                            IdWorker = idWorker,
+                            Quantity = worker.Quantity
+                        });
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,22 +172,22 @@ namespace AutodorInfoSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             return View(worker);
         }
 
         // GET: Workers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int idTask)
         {
-            var worker = await _context.Workers.FindAsync(id);
-            if (worker != null)
+            var workersHasTask = await _context.WorkersHasTasks.FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdWorker == id);
+            if (workersHasTask != null)
             {
-                _context.Workers.Remove(worker);
+                _context.WorkersHasTasks.Remove(workersHasTask);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
         }
 
         private bool WorkerExists(int id)

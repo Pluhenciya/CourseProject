@@ -377,6 +377,7 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Task", "IdTaskNavigation")
                         .WithMany("EquipmentHasTasks")
                         .HasForeignKey("IdTask")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_equipment_has_tasks_tasks1");
 
@@ -396,6 +397,7 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Task", "IdTaskNavigation")
                         .WithMany("MaterialsHasTasks")
                         .HasForeignKey("IdTask")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_materials_has_tasks_tasks1");
 
@@ -437,6 +439,7 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Worker", "IdWorkerNavigation")
                         .WithMany("WorkersHasTasks")
                         .HasForeignKey("IdWorker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_workers_has_tasks_workers1");
 
@@ -456,6 +459,7 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Project", null)
                         .WithMany()
                         .HasForeignKey("ProjectsIdProject")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_projecters_has_projects_projects1");
                 });

@@ -85,7 +85,7 @@
                                     @if (User.Identity.IsAuthenticated)
                                     {
                                         <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial">
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial" asp-route-idTask="@Model.IdTask">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         </td>
@@ -152,7 +152,7 @@
                                     @if (User.Identity.IsAuthenticated)
                                     {
                                         <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment">
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment" asp-route-idTask="@Model.IdTask">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         </td>
@@ -219,7 +219,7 @@
                                     @if (User.Identity.IsAuthenticated)
                                     {
                                         <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker">
+                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker" asp-route-idTask="@Model.IdTask">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         </td>

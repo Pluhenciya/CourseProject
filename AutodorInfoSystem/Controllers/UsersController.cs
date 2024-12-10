@@ -24,7 +24,12 @@ namespace AutodorInfoSystem.Controllers
             _tokenService = tokenService;
         }
 
-        public IActionResult Register()
+		public async Task<IActionResult> Index()
+		{
+			return View(await _context.Users.Include(u => u.Projecter).Include(u => u.Admin).ToListAsync());
+		}
+
+		public IActionResult Register()
         {
             return View();
         }

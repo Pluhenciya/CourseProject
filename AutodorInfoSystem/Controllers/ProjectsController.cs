@@ -28,12 +28,11 @@ namespace AutodorInfoSystem.Controllers
                 string temp = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 return View(await _context.Projects
                     .Include(p => p.ProjectersIdUsers)
-                    .Where(p => p.ProjectersIdUsers
-                    .Any(p => p.IdUser == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
+                    .Where(p => p.ProjectersIdUsers.Any(p => p.IdUser == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
                     .ToListAsync());
             }
             else
-                return View(await _context.Projects.ToListAsync());
+                return View(await _context.Projects.Where(p => p.IsCompleted).ToListAsync());
         }
 
         // GET: Projects/Details/5
@@ -101,7 +100,7 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdProject,Name,Description,IsCompleted")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("IdProject,Name,Description,IsCompleted,Cost")] Project project)
         {
             if (id != project.IdProject)
             {
