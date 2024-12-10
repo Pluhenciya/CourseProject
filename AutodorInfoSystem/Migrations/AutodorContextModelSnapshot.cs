@@ -70,15 +70,15 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id_task");
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("double")
+                        .HasColumnName("cost");
+
                     b.Property<int>("Quantity")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("quantity")
                         .HasDefaultValueSql("'1'");
-
-                    b.Property<double>("Сost")
-                        .HasColumnType("double")
-                        .HasColumnName("cost");
 
                     b.HasKey("IdEquipment", "IdTask")
                         .HasName("PRIMARY")
@@ -131,13 +131,13 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id_task");
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("double")
+                        .HasColumnName("cost");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
-
-                    b.Property<double>("Сost")
-                        .HasColumnType("double")
-                        .HasColumnName("cost");
 
                     b.HasKey("IdMaterial", "IdTask")
                         .HasName("PRIMARY")
@@ -159,6 +159,10 @@ namespace AutodorInfoSystem.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdProject"));
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("double")
+                        .HasColumnName("cost");
+
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
@@ -174,10 +178,6 @@ namespace AutodorInfoSystem.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("name");
-
-                    b.Property<double>("Сost")
-                        .HasColumnType("double")
-                        .HasColumnName("cost");
 
                     b.HasKey("IdProject")
                         .HasName("PRIMARY");
@@ -223,6 +223,10 @@ namespace AutodorInfoSystem.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdTask"));
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("double")
+                        .HasColumnName("cost");
+
                     b.Property<string>("Description")
                         .HasMaxLength(45)
                         .HasColumnType("varchar(45)")
@@ -237,10 +241,6 @@ namespace AutodorInfoSystem.Migrations
                         .HasMaxLength(45)
                         .HasColumnType("varchar(45)")
                         .HasColumnName("name");
-
-                    b.Property<double>("Сost")
-                        .HasColumnType("double")
-                        .HasColumnName("cost");
 
                     b.HasKey("IdTask")
                         .HasName("PRIMARY");
@@ -315,13 +315,13 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id_task");
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("double")
+                        .HasColumnName("cost");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
-
-                    b.Property<double>("Сost")
-                        .HasColumnType("double")
-                        .HasColumnName("cost");
 
                     b.HasKey("IdWorker", "IdTask")
                         .HasName("PRIMARY")
