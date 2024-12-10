@@ -92,12 +92,14 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdTask,Name,Description,ProjectsIdProject")] Models.Task task)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTask,Name,Description,IdProject,Cost")] Models.Task task)
         {
             if (id != task.IdTask)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("IdProjectNavigation");
 
             if (ModelState.IsValid)
             {
@@ -117,9 +119,9 @@ namespace AutodorInfoSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Projects", new { id = task.IdProject });
             }
-            return RedirectToAction("Details", "Projects", new { id = task.IdProject });
+            return View(task);
         }
 
         // GET: Tasks/Delete/5

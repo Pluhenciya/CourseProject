@@ -11,7 +11,7 @@ namespace AutodorInfoSystem.Services
 
         public User? UserVerify(User user)
         {
-            var userExist = _dbContext.Users.FirstOrDefault(u => u.Login == user.Login);
+            var userExist = _dbContext.Users.Include(u =>u.Admin).FirstOrDefault(u => u.Login == user.Login);
 
             if (userExist != null && BCrypt.Net.BCrypt.Verify(user.Password, userExist.Password))
             {

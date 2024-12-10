@@ -46,15 +46,15 @@ namespace AutodorInfoSystem.Migrations
                     DECLARE materials_cost DECIMAL(11,2);
                     DECLARE workers_cost DECIMAL(11,2);
 
-                    SELECT SUM(cost) INTO equipment_cost
+                    SELECT COALESCE(SUM(cost), 0) INTO equipment_cost
                     FROM equipment_has_tasks
                     WHERE id_task = NEW.id_task;
-    
-                    SELECT SUM(cost) INTO materials_cost
+
+                    SELECT COALESCE(SUM(cost), 0) INTO materials_cost
                     FROM materials_has_tasks
                     WHERE id_task = NEW.id_task;
-    
-                    SELECT SUM(cost) INTO workers_cost
+
+                    SELECT COALESCE(SUM(cost), 0) INTO workers_cost
                     FROM workers_has_tasks
                     WHERE id_task = NEW.id_task;
     

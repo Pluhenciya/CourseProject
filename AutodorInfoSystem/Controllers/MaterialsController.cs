@@ -98,13 +98,13 @@ namespace AutodorInfoSystem.Controllers
                     });
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", new { id = idTask }); ;
+                return RedirectToAction("Details", "Tasks", new { id = idTask }); 
             }
             return View(material);
         }
 
         // GET: Materials/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int idTask)
         {
             if (id == null)
             {
@@ -116,6 +116,8 @@ namespace AutodorInfoSystem.Controllers
             {
                 return NotFound();
             }
+            ViewBag.IdTask = idTask;
+            material.Quantity = _context.MaterialsHasTasks.FirstOrDefault(mht => mht.IdTask == idTask && mht.IdMaterial == material.IdMaterial).Quantity;
             return View(material);
         }
 
@@ -124,7 +126,7 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMaterial,Name,MeasurementUnit")] Material material)
+        public async Task<IActionResult> Edit(int id, Material material, int idTask)
         {
             if (id != material.IdMaterial)
             {
@@ -135,7 +137,28 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(material);
+                    var findMaterial = await _context.Materials.FirstOrDefaultAsync(e => e.Name == material.Name);
+                    if (findMaterial != null)
+                    {
+                        _context.Update(new MaterialsHasTask
+                        {
+                            IdTask = idTask,
+                            IdMaterial = findMaterial.IdMaterial,
+                            Quantity = material.Quantity,
+                        });
+                    }
+                    else
+                    {
+                        _context.Materials.Update(material);
+                        await _context.SaveChangesAsync();
+                        var idMaterial = _context.Materials.FirstOrDefault(m => m.Name == material.Name).IdMaterial;
+                        _context.MaterialsHasTasks.Update(new MaterialsHasTask
+                        {
+                            IdTask = idTask,
+                            IdMaterial = idMaterial,
+                            Quantity = material.Quantity
+                        });
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,7 +172,7 @@ namespace AutodorInfoSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             return View(material);
         }
