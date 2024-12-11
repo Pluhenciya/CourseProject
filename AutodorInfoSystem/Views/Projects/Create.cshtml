@@ -12,6 +12,7 @@
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="IdProject" />
+                <input type="hidden" asp-for="IsCompleted" value="false" />
                 <div class="form-group">
                     <label class="control-label" for="Name">Название</label>
                     <input asp-for="Name" class="form-control" />
@@ -22,11 +23,18 @@
                     <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
-                <div class="form-group form-check">
-                    <input asp-for="IsCompleted" class="form-check-input" />
-                    <label class="form-check-label" for="IsCompleted">Завершено</label>
-                    <span asp-validation-for="IsCompleted" class="text-danger"></span>
-                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        <label class="control-label" for="IdProjecter">Проектировщик</label>
+                        <select id="IdProjecter" name="IdProjecter" class="form-control">
+                            @foreach (var projecter in ViewBag.Projecters)
+                            {
+                                <option value="@projecter.Value">@projecter.Text</option>
+                            }
+                        </select>
+                    </div>
+                }
                 <div class="form-group">
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-check">

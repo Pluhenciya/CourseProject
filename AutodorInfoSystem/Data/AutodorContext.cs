@@ -59,7 +59,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.UsersIdUserNavigation).WithOne(p => p.Admin)
                 .HasForeignKey<Admin>(d => d.UsersIdUser)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_admins_users1");
         });
 
@@ -186,7 +186,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.IdUserNavigation).WithOne(p => p.Projecter)
                 .HasForeignKey<Projecter>(d => d.IdUser)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_projecters_users");
 
             entity.HasMany(d => d.ProjectsIdProjects).WithMany(p => p.ProjectersIdUsers)
@@ -232,7 +232,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.IdProjectNavigation).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.IdProject)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_tasks_projects1");
         });
 
