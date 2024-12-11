@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  app:
+    image: myaspnetapp
+    build:
+      context: .
+      dockerfile: MyAspNetApp/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=mydb;User=root;Password=my-secret-pw;
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: my-secret-pw
+    ports:
+      - "3306:3306"
