@@ -8,18 +8,23 @@ services:
       - "5000:80"
     depends_on:
       - db
-    environment:
-      - MySQLConnString=${MySQLConnString}
-      - JWTKey={JWTKey}
-      - JWTIssuer={JWTIssuer}
-      - JWTAudience={JWTAudience}
+    env_file:
+      - path: ./environment/default.env
+        required: true
+    networks:
+      - backend
 
   db:
     image: mysql:9.1
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    env_file:
+      - path: ./environment/mysql.env
+        required: true
     ports:
       - "3306:3306"
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: false
+    driver: bridge
