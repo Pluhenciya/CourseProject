@@ -20,7 +20,7 @@ services:
       - backend
 
   mysql_dbms:
-    image: mysql:8.4
+    image: mysql:9.1
     container_name: mysql_dbms
     hostname: mysql_dbms
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
     networks:
       - backend
 
-  networks:
-    backend:
-      external: false
-      driver: bridge
+networks:
+  backend:
+    external: false
+    driver: bridge
