@@ -16,4 +16,4 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # ”казываем команду дл€ запуска приложени€
-ENTRYPOINT ["dotnet", "MyAspNetApp.dll"]
+ENTRYPOINT ["dotnet", "AutodorInfoSystem.dll"]
