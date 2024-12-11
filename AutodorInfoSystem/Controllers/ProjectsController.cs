@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutodorInfoSystem.Data;
+using AutodorInfoSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Models;
 using System.Security.Claims;
 
 namespace AutodorInfoSystem.Controllers
@@ -24,8 +20,10 @@ namespace AutodorInfoSystem.Controllers
         public async Task<IActionResult> Index()
         {
             if (User.Identity.IsAuthenticated)
-            { 
-                string temp = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            {
+                if (User.IsInRole("Admin"))
+                    return View(await _context.Projects.ToListAsync());
+
                 return View(await _context.Projects
                     .Include(p => p.ProjectersIdUsers)
                     .Where(p => p.ProjectersIdUsers.Any(p => p.IdUser == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
@@ -45,6 +43,7 @@ namespace AutodorInfoSystem.Controllers
 
             var project = await _context.Projects
                 .Include(p => p.Tasks)
+                .Include(p => p.ProjectersIdUsers)
                 .FirstOrDefaultAsync(m => m.IdProject == id);
             if (project == null)
             {
@@ -55,8 +54,13 @@ namespace AutodorInfoSystem.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            if (User.IsInRole("Admin"))
+            {
+                var projecters = await _context.Projecters.ToListAsync();
+                ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
+            }
             return View();
         }
 
@@ -65,19 +69,37 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdProject,Name,Description,IsCompleted")] Project project)
+        public async Task<IActionResult> Create([Bind("IdProject,Name,Description,IsCompleted")] Project project, int? idProjecter)
         {
             ModelState.Remove("IdProject");
 
             if (ModelState.IsValid)
             {
-                project.ProjectersIdUsers.Add(_context.Projecters.Find(Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)));
+                if (User.IsInRole("Admin"))
+                {
+                    var projecter = await _context.Projecters.FindAsync(idProjecter.Value);
+                    project.ProjectersIdUsers.Add(projecter);
+                }
+                else
+                {
+                    var projecterId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    var projecter = await _context.Projecters.FindAsync(projecterId);
+                    project.ProjectersIdUsers.Add(projecter);
+                }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Если модель не валидна, повторно получаем проектировщиков для передачи в представление
+            if (User.IsInRole("Admin"))
+            {
+                var projecters = await _context.Projecters.ToListAsync();
+                ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
+            }
             return View(project);
         }
+
 
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -92,6 +114,11 @@ namespace AutodorInfoSystem.Controllers
             {
                 return NotFound();
             }
+            if (User.IsInRole("Admin"))
+            {
+                var projecters = await _context.Projecters.ToListAsync();
+                ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
+            }
             return View(project);
         }
 
@@ -100,7 +127,7 @@ namespace AutodorInfoSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdProject,Name,Description,IsCompleted,Cost")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("IdProject,Name,Description,IsCompleted,Cost")] Project project, int? idProjecter)
         {
             if (id != project.IdProject)
             {
@@ -111,7 +138,37 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(project);
+                    // Получаем текущий проект из базы данных
+                    var existingProject = await _context.Projects
+                        .Include(p => p.ProjectersIdUsers) // Включаем проектировщиков
+                        .FirstOrDefaultAsync(p => p.IdProject == id);
+
+                    if (existingProject == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Удаляем старую связь с проектировщиком
+                    existingProject.ProjectersIdUsers.Clear();
+
+                    // Если пользователь - администратор, добавляем нового проектировщика
+                    if (User.IsInRole("Admin") && idProjecter.HasValue)
+                    {
+                        var projecter = await _context.Projecters.FindAsync(idProjecter.Value);
+                        if (projecter != null)
+                        {
+                            existingProject.ProjectersIdUsers.Add(projecter);
+                        }
+                    }
+
+                    // Обновляем остальные свойства проекта
+                    existingProject.Name = project.Name;
+                    existingProject.Description = project.Description;
+                    existingProject.IsCompleted = project.IsCompleted;
+                    existingProject.Cost = project.Cost;
+
+                    // Обновляем проект в контексте
+                    _context.Update(existingProject);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -127,8 +184,16 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // Если модель не валидна, повторно получаем проектировщиков для передачи в представление
+            if (User.IsInRole("Admin"))
+            {
+                var projecters = await _context.Projecters.ToListAsync();
+                ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
+            }
             return View(project);
         }
+
 
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)

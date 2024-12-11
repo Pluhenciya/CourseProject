@@ -10,7 +10,7 @@
             <h2 class="text-center mb-4">Пользователи</h2>
             @if (User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-success mb-3" asp-action="Create">
+                <a class="btn btn-success mb-3" asp-action="Register">
                     <i class="fas fa-plus-circle"></i>
                     Зарегистрировать нового
                 </a>
@@ -35,7 +35,7 @@
                                     <tr>
                                         <td>@user.Login</td>
                                         <td>@(user.Admin != null? "Администратор" : "Проектировщик")</td>
-                                        <td>@user.Projecter?.Surname @user.Projecter?.Name @user.Projecter?.Patronymic</td>
+                                        <td>@user.Projecter?.LongName</td>
                                         @if (User.Identity.IsAuthenticated)
                                         {
                                             <td>
