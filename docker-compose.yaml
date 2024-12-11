@@ -1,30 +1,46 @@
 services:
-  app:
-    image: myaspnetapp
-    build:
-      context: .
-      dockerfile: AutodorInfoSystem/Dockerfile
+  mvc:
+    container_name: adis_mvc
+    hostname: adis_mvc
+    restart: always
     ports:
-      - "5000:80"
+      - "80:8080"
     depends_on:
-      - db
+      mysql_dbms:
+        condition: service_healthy
+        restart: true
+    image: adis_mvc
+    build:
+      context: ./AutodorInfoSystem/.
+      dockerfile: Dockerfile
     env_file:
       - path: ./environment/default.env
         required: true
     networks:
       - backend
 
-  db:
-    image: mysql:9.1
+  mysql_dbms:
+    image: mysql:8.4
+    container_name: mysql_dbms
+    hostname: mysql_dbms
+    restart: unless-stopped
+    volumes:
+      - "./db/data:/var/lib/mysql"
+      - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     env_file:
       - path: ./environment/mysql.env
         required: true
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 20s
+      start_period: 20s
+      start_interval: 4s
+      retries: 60
     networks:
       - backend
 
-networks:
-  backend:
-    external: false
-    driver: bridge
+  networks:
+    backend:
+      external: false
+      driver: bridge
