@@ -1,25 +1,25 @@
-version: '3.4'
-
 services:
   app:
     image: myaspnetapp
     build:
       context: .
-      dockerfile: AutodorInfoSystem/Dockerfile
+      dockerfile: MyAspNetApp/Dockerfile
     ports:
       - "5000:80"
     depends_on:
       - db
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=mydb;User=root;Password=my-secret-pw;
+      - MySQLConnString=${MySQLConnString}
+      - JWTKey={JWTKey}
+      - JWTIssuer={JWTIssuer}
+      - JWTAudience={JWTAudience}
 
   db:
-    image: mysql:5.7
+    image: mysql:9.1
     environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: my-secret-pw
+      MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE=${MYSQL_DATABASE}
+      MYSQL_USER=${MYSQL_USER}
+      MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
