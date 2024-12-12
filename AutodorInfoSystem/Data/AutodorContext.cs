@@ -39,8 +39,6 @@ public partial class AutodorContext : DbContext
 
     public virtual DbSet<WorkersHasTask> WorkersHasTasks { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
