@@ -4,7 +4,7 @@ services:
     hostname: adis_mvc
     restart: always
     ports:
-      - "80:8080"
+      - "5000:8080"
     depends_on:
       mysql_dbms:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
     networks:
       - backend
 
-  networks:
-    backend:
-      external: false
-      driver: bridge
+networks:
+  backend:
+    external: false
+    driver: bridge

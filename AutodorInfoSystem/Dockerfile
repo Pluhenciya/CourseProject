@@ -1,19 +1,20 @@
 # Используем официальный образ .NET SDK для сборки приложения
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /source
 
 # Копируем csproj и восстанавливаем зависимости
-COPY AutodorInfoSystem/*.csproj ./
+COPY ./*.csproj ./
 RUN dotnet restore
 
 # Копируем все файлы и собираем приложение
-COPY AutodorInfoSystem/. ./
-RUN dotnet publish -c Release -o out
+COPY ./ ./
+WORKDIR /source
+RUN dotnet publish -c Release -o /app --no-restore
+
 
 # Используем официальный образ .NET Runtime для запуска приложения
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out ./
 
-# Указываем команду для запуска приложения
+COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "AutodorInfoSystem.dll"]
