@@ -40,7 +40,7 @@ services:
     networks:
       - backend
 
-  networks:
-    backend:
-      external: false
-      driver: bridge
+networks:
+  backend:
+    external: false
+    driver: bridge

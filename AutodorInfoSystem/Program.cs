@@ -1,4 +1,5 @@
 using AutodorInfoSystem.Data;
+using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AutodorContext>(options =>
 {
-    options.UseMySql(Environment.GetEnvironmentVariable("MySQLConnString") ?? builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.1.0-mysql"));
+    options.UseMySql(Environment.GetEnvironmentVariable("MySQLConnString") ?? builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.0-mysql"));
 });
 
 builder.Services.AddScoped<UserService, UserService>();
@@ -47,12 +48,12 @@ builder.Services.AddAuthentication(options =>
         {
             context.Token = context.Request.Cookies["A"];
 
-            return Task.CompletedTask;
+            return System.Threading.Tasks.Task.CompletedTask;
         },
         OnTokenValidated = context =>
         {
             Console.WriteLine("Token is valid.");
-            return Task.CompletedTask;
+            return System.Threading.Tasks.Task.CompletedTask;
         }
     };
 });
@@ -65,6 +66,19 @@ using (var scope = app.Services.CreateScope())
     if (dbContext.Database.GetPendingMigrations().Any())
     {
         dbContext.Database.Migrate();
+        var username = Environment.GetEnvironmentVariable("ADMIN_LOGIN");
+        var password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+        var createdUser = new User
+        {
+            Login = username,
+            Password = BCrypt.Net.BCrypt.HashPassword(password)
+        };
+        createdUser.Admin = new Admin
+        {
+            UsersIdUser = 1
+        };
+        dbContext.Users.Add(createdUser);
+        dbContext.SaveChanges();
     }
 }
 
