@@ -73,11 +73,12 @@ using (var scope = app.Services.CreateScope())
             Login = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password)
         };
-        createdUser.Admin = new Admin
+        dbContext.Users.Add(createdUser);
+        dbContext.SaveChanges();
+        dbContext.Admins.Add(new Admin
         {
             UsersIdUser = 1
-        };
-        dbContext.Users.Add(createdUser);
+        });
         dbContext.SaveChanges();
     }
 }
