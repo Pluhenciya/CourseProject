@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Копируем csproj и восстанавливаем зависимости
-COPY ./*.csproj ./
+COPY AutodorInfoSystem/*.csproj ./
 RUN dotnet restore
 
 # Копируем все файлы и собираем приложение
-COPY . ./
+COPY AutodorInfoSystem/. ./
 RUN dotnet publish -c Release -o out
 
 # Используем официальный образ .NET Runtime для запуска приложения
