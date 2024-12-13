@@ -13,6 +13,9 @@ public partial class Task
 
     public string? Description { get; set; } = null!;
 
+    [NotMapped]
+    public string? ShortDescription => Description?.Length > 100 ? $"{Description?.Substring(0, 100)}..." : Description;
+
     public int IdProject { get; set; }
 
     [Column("cost")]

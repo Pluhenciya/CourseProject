@@ -15,53 +15,89 @@
                     Создать новый
                 </a>
             }
-            <div class="card bg-light text-dark">
-                <div class="card-body">
-                    @if (Model != null && Model.Any())
-                    {
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Название проекта</th>
-                                    <th scope="col">Описание проекта</th>
-                                    <th scope="col">Завершен</th>
-                                    <th scope="col">Стоимость проекта</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var project in Model)
-                                {
-                                    <tr onclick="location.href='@Url.Action("Details", new { id = project.IdProject })'" style="cursor: pointer;">
-                                        <td>@project.Name</td>
-                                        <td>@project.Description</td>
-                                        <td>@(project.IsCompleted ? "Да" : "Нет")</td>
-                                        <td>@project.Cost руб.</td>
+            @if (Model != null && Model.Any())
+            {
+                <div class="d-none d-md-block">
+                    <div class="card bg-light text-dark">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Название проекта</th>
+                                        <th scope="col">Описание проекта</th>
+                                        <th scope="col">Завершен</th>
+                                        <th scope="col">Стоимость проекта</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var project in Model)
+                                    {
+                                        <tr onclick="location.href='@Url.Action("Details", new { id = project.IdProject })'" style="cursor: pointer;">
+                                            <td>@project.Name</td>
+                                            <td>@project.ShortDescription</td>
+                                            <td>@(project.IsCompleted ? "Да" : "Нет")</td>
+                                            <td>@project.Cost руб.</td>
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <td>
+                                                    <a class="btn btn-primary" asp-action="Edit" asp-controller="Projects" asp-route-id="@project.IdProject">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-danger" asp-action="Delete" asp-controller="Projects" asp-route-id="@project.IdProject" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-block d-md-none">
+                    <div class="row">
+                        @foreach (var project in Model)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card" onclick="location.href='@Url.Action("Details", new { id = project.IdProject })'" style="cursor: pointer;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@project.Name</h5>
+                                        <div class="card-description">
+                                            <p class="card-text">@project.ShortDescription</p>
+                                        </div>
+                                        <p class="card-text"><strong>Завершен:</strong> @(project.IsCompleted ? "Да" : "Нет")</p>
+                                        <p class="card-text"><strong>Стоимость:</strong> @project.Cost руб.</p>
                                         @if (User.Identity.IsAuthenticated)
                                         {
-                                            <td>
+                                            <div class="mt-2">
                                                 <a class="btn btn-primary" asp-action="Edit" asp-controller="Projects" asp-route-id="@project.IdProject">
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-edit"></i> Редактировать
                                                 </a>
-                                            </td>
-                                            <td>
                                                 <a class="btn btn-danger" asp-action="Delete" asp-controller="Projects" asp-route-id="@project.IdProject" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash"></i> Удалить
                                                 </a>
-                                            </td>
+                                            </div>
                                         }
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p>Извините не одного проекта, пока нет.</p>
-                    }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="card bg-light text-dark">
+                    <div class="card-body">
+                        <p>Извините, проектов пока нет.</p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

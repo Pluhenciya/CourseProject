@@ -28,217 +28,305 @@
     </div>
 
     <div class="details-actions mt-3">
-        <a class="btn btn-secondary" asp-action="Details" asp-controller="Projects" asp-route-id="@Model.IdProject">
+        <a class="btn btn-secondary mb-2" asp-action="Details" asp-controller="Projects" asp-route-id="@Model.IdProject">
             <i class="fas fa-arrow-left"></i> Назад к проекту
         </a>
         @if (User.Identity.IsAuthenticated)
         {
-            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.IdTask">
-                <i class="fas fa-edit"></i> Редактировать основную информацию
+            <a class="btn btn-primary mb-2" asp-action="Edit" asp-route-id="@Model.IdTask">
+                <i class="fas fa-edit"></i> Редактировать
             </a>
-            <a class="btn btn-danger" asp-action="Delete" asp-controller="Tasks" asp-route-id="@Model.IdTask" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">
+            <a class="btn btn-danger mb-2" asp-action="Delete" asp-controller="Tasks" asp-route-id="@Model.IdTask" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">
                 <i class="fas fa-trash"></i> Удалить задачу
             </a>
         }
     </div>
+
     <div>
         <h3 class="mt-4">Материалы</h3>
-    @if (User.Identity.IsAuthenticated)
-    {
-            <div class="details-actions mt-3">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="details-actions mt-3 mb-3">
                 <a class="btn btn-success" asp-controller="Materials" asp-action="Create" asp-route-idTask="@Model.IdTask">
                     <i class="fas fa-plus-circle"></i> Добавить материал
                 </a>
             </div>
-    }
-        <div class="mt-4 card bg-light text-dark">
-            <div class="card-body">
-                @if (Model.MaterialsHasTasks != null && Model.MaterialsHasTasks.Any())
+        }
+
+        @if (Model.MaterialsHasTasks != null && Model.MaterialsHasTasks.Any())
+        {
+
+            // Для мобильных устройств
+            <div class="d-block d-md-none">
+                @foreach (var material in Model.MaterialsHasTasks)
                 {
-                    <table class="table table-striped table-hover tasks-table">
-                        <thead>
-                            <tr>
-                                <th>Название материала</th>
-                                <th>Количество</th>
-                                <th>Цена</th>
-                                <th>Стоимость</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var material in Model.MaterialsHasTasks)
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => material.IdMaterialNavigation.Name)</h5>
+                            <p class="card-text">Количество: @Html.DisplayFor(modelItem => material.Quantity) @Html.DisplayFor(modelItem => material.IdMaterialNavigation.MeasurementUnit)</p>
+                            <p class="card-text">Цена: @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Price) руб.</p>
+                            <p class="card-text">Стоимость: @Html.DisplayFor(modelItem => material.Cost) руб.</p>
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => material.Quantity) @Html.DisplayFor(modelItem => material.IdMaterialNavigation.MeasurementUnit)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Price) руб.
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => material.Cost) руб.
-                                    </td>
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial" asp-route-idTask="@Model.IdTask">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Materials" asp-route-idTask="@Model.IdTask" asp-route-id="@material.IdMaterial" onclick="return confirm('Вы уверены, что хотите удалить этот материал?');">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    }
-                                </tr>
+                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial" asp-route-idTask="@Model.IdTask">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Materials" asp-route-idTask="@Model.IdTask" asp-route-id="@material.IdMaterial" onclick="return confirm('Вы уверены, что хотите удалить этот материал?');">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </a>
                             }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p>Материалы отсутствуют.</p>
+                        </div>
+                    </div>
                 }
             </div>
-        </div>
+
+            // Для компьютеров
+            <div class="d-none d-md-block">
+                <div class="mt-4 card bg-light text-dark">
+                    <div class="card-body">
+                        <table class="table table-striped table-hover tasks-table">
+                            <thead>
+                                <tr>
+                                    <th>Название материала</th>
+                                    <th>Количество</th>
+                                    <th>Цена</th>
+                                    <th>Стоимость</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var material in Model.MaterialsHasTasks)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => material.Quantity) @Html.DisplayFor(modelItem => material.IdMaterialNavigation.MeasurementUnit)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => material.IdMaterialNavigation.Price) руб.
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => material.Cost) руб.
+                                        </td>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <td>
+                                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Materials" asp-route-id="@material.IdMaterial" asp-route-idTask="@Model.IdTask">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Materials" asp-route-idTask="@Model.IdTask" asp-route-id="@material.IdMaterial" onclick="return confirm('Вы уверены, что хотите удалить этот материал?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Материалы отсутствуют.</p>
+        }
     </div>
+
 
     <div>
         <h3 class="mt-4">Спецтехника</h3>
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="details-actions mt-3">
-                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create"  asp-route-idTask="@Model.IdTask">
+            <div class="details-actions mt-3  mb-3">
+                <a class="btn btn-success" asp-controller="Equipments" asp-action="Create" asp-route-idTask="@Model.IdTask">
                     <i class="fas fa-plus-circle"></i> Добавить спецтехнику
                 </a>
             </div>
         }
-        <div class="mt-4 card bg-light text-dark">
-            <div class="card-body">
-                @if (Model.EquipmentHasTasks != null && Model.EquipmentHasTasks.Any())
+
+        @if (Model.EquipmentHasTasks != null && Model.EquipmentHasTasks.Any())
+        {
+            // Для мобильных устройств
+            <div class="d-block d-md-none">
+                @foreach (var equipment in Model.EquipmentHasTasks)
                 {
-                    <table class="table table-striped table-hover tasks-table">
-                        <thead>
-                            <tr>
-                                <th>Название спецтехники</th>
-                                <th>Количество </th>
-                                <th>Цена</th>
-                                <th>Стоимость</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var equipment in Model.EquipmentHasTasks)
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Name)</h5>
+                            <p class="card-text">Количество: @Html.DisplayFor(modelItem => equipment.Quantity) шт</p>
+                            <p class="card-text">Цена: @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Price) руб.</p>
+                            <p class="card-text">Стоимость: @Html.DisplayFor(modelItem => equipment.Cost) руб.</p>
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => equipment.Quantity) шт
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Price) руб.
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => equipment.Cost) руб.
-                                    </td>
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment" asp-route-idTask="@Model.IdTask">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Equipments" asp-route-idTask="@Model.IdTask" asp-route-id="@equipment.IdEquipment" onclick="return confirm('Вы уверены, что хотите удалить эту спецтехнику?');">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    }
-                                </tr>
+                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment" asp-route-idTask="@Model.IdTask">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Equipments" asp-route-idTask="@Model.IdTask" asp-route-id="@equipment.IdEquipment" onclick="return confirm('Вы уверены, что хотите удалить эту спецтехнику?');">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </a>
                             }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p>Спецтехники отсутствуют.</p>
+                        </div>
+                    </div>
                 }
             </div>
-        </div>
+
+            // Для компьютеров
+            <div class="d-none d-md-block">
+                <div class="mt-4 card bg-light text-dark">
+                    <div class="card-body">
+                        <table class="table table-striped table-hover tasks-table">
+                            <thead>
+                                <tr>
+                                    <th>Название спецтехники</th>
+                                    <th>Количество</th>
+                                    <th>Цена</th>
+                                    <th>Стоимость</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var equipment in Model.EquipmentHasTasks)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => equipment.Quantity) шт
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => equipment.IdEquipmentNavigation.Price) руб.
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => equipment.Cost) руб.
+                                        </td>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <td>
+                                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Equipments" asp-route-id="@equipment.IdEquipment" asp-route-idTask="@Model.IdTask">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Equipments" asp-route-idTask="@Model.IdTask" asp-route-id="@equipment.IdEquipment" onclick="return confirm('Вы уверены, что хотите удалить эту спецтехнику?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Спецтехники отсутствуют.</p>
+        }
     </div>
+
 
     <div>
         <h3 class="mt-4">Рабочие</h3>
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="details-actions mt-3">
+            <div class="details-actions mt-3 mb-3">
                 <a class="btn btn-success" asp-controller="Workers" asp-action="Create" asp-route-idTask="@Model.IdTask">
                     <i class="fas fa-plus-circle"></i> Добавить рабочего
                 </a>
             </div>
         }
-        <div class="mt-4 card bg-light text-dark">
-            <div class="card-body">
-                @if (Model.WorkersHasTasks != null && Model.WorkersHasTasks.Any())
+
+        @if (Model.WorkersHasTasks != null && Model.WorkersHasTasks.Any())
+        {
+            // Для мобильных устройств
+            <div class="d-block d-md-none">
+                @foreach (var worker in Model.WorkersHasTasks)
                 {
-                    <table class="table table-striped table-hover tasks-table">
-                        <thead>
-                            <tr>
-                                <th>Должность</th>
-                                <th>Количество</th>
-                                <th>Зарплата</th>
-                                <th>Стоимость</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var worker in Model.WorkersHasTasks)
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Name)</h5>
+                            <p class="card-text">Количество: @Html.DisplayFor(modelItem => worker.Quantity)</p>
+                            <p class="card-text">Зарплата: @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Salary) руб.</p>
+                            <p class="card-text">Стоимость: @Html.DisplayFor(modelItem => worker.Cost) руб.</p>
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => worker.Quantity)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Salary) руб.
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => worker.Cost) руб.
-                                    </td>
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        <td>
-                                            <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker" asp-route-idTask="@Model.IdTask">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Workers" asp-route-idTask="@Model.IdTask" asp-route-id="@worker.IdWorker" onclick="return confirm('Вы уверены, что хотите удалить этого рабочего?');">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    }
-                                </tr>
+                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker" asp-route-idTask="@Model.IdTask">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Workers" asp-route-idTask="@Model.IdTask" asp-route-id="@worker.IdWorker" onclick="return confirm('Вы уверены, что хотите удалить этого рабочего?');">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </a>
                             }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p>Рабочие отсутствуют.</p>
+                        </div>
+                    </div>
                 }
             </div>
-        </div>
+
+            // Для компьютеров
+            <div class="d-none d-md-block">
+                <div class="mt-4 card bg-light text-dark">
+                    <div class="card-body">
+                        <table class="table table-striped table-hover tasks-table">
+                            <thead>
+                                <tr>
+                                    <th>Должность рабочего</th>
+                                    <th>Количество</th>
+                                    <th>Зарплата</th>
+                                    <th>Стоимость</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var worker in Model.WorkersHasTasks)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => worker.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => worker.IdWorkerNavigation.Salary) руб.
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => worker.Cost) руб.
+                                        </td>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <td>
+                                                <a class="btn btn-primary" asp-action="Edit" asp-controller="Workers" asp-route-id="@worker.IdWorker" asp-route-idTask="@Model.IdTask">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-danger" asp-action="Delete" asp-controller="Workers" asp-route-idTask="@Model.IdTask" asp-route-id="@worker.IdWorker" onclick="return confirm('Вы уверены, что хотите удалить этого рабочего?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Рабочие отсутствуют.</p>
+        }
     </div>
 </div>
