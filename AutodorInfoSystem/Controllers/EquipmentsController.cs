@@ -76,7 +76,7 @@ namespace AutodorInfoSystem.Controllers
                     {
                         IdTask = idTask,
                         IdEquipment = findEquipment.IdEquipment,
-                        Quantity = equipment.Quantity,
+                        Quantity = equipment.Quantity ?? 0,
                     });
                 }
                 else
@@ -88,12 +88,18 @@ namespace AutodorInfoSystem.Controllers
                     {
                         IdTask = idTask,
                         IdEquipment = idEquipment,
-                        Quantity = equipment.Quantity
+                        Quantity = equipment.Quantity ?? 0
                     });
                 }
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
+            if (equipment.Price == null)
+            {
+                ModelState["Price"].Errors.Clear();
+                ModelState.AddModelError("Price", "Введенное не является ценой");
+            }
+            ViewBag.IdTask = idTask;
             return View(equipment);
         }
 
@@ -138,7 +144,7 @@ namespace AutodorInfoSystem.Controllers
                         {
                             IdTask = idTask,
                             IdEquipment = findEquipment.IdEquipment,
-                            Quantity = equipment.Quantity
+                            Quantity = equipment.Quantity ?? 0
                         });
                     }
                     else
@@ -150,7 +156,7 @@ namespace AutodorInfoSystem.Controllers
                         {
                             IdTask = idTask,
                             IdEquipment = idEquipment,
-                            Quantity = equipment.Quantity
+                            Quantity = equipment.Quantity ?? 0
                         });
                     }
                     await _context.SaveChangesAsync();
@@ -168,6 +174,12 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
+            if (equipment.Price == null)
+            {
+                ModelState["Price"].Errors.Clear();
+                ModelState.AddModelError("Price", "Введенное не является ценой");
+            }
+            ViewBag.IdTask = idTask;
             return View(equipment);
         }
 

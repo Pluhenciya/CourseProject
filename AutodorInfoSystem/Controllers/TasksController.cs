@@ -68,6 +68,7 @@ namespace AutodorInfoSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Projects", new { id = task.IdProject }); ;
             }
+            ViewBag.IdProject = task.IdProject;
             return View();
         }
 

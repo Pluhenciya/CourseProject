@@ -9,13 +9,14 @@ public partial class Project
 {
     public int IdProject { get; set; }
 
-    [Required(ErrorMessage = "Поле Название обязательно")]
+    [Required(ErrorMessage = "Это поле обязательное")]
+    [StringLength(200, ErrorMessage = "Лимит символов превышен (максимум 200 символов)")]
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; } = null!;
 
     [NotMapped]
-    public string? ShortDescription => Description?.Length > 100 ? $"{Description?.Substring(0, 100)}..." : Description; 
+    public string? ShortDescription => Description?.Length > 100 ? $"{Description?.Substring(0, 200)}..." : Description; 
 
     public bool IsCompleted { get; set; }
 

@@ -47,17 +47,34 @@
                         <li class="nav-item">
                             @if (!User.Identity.IsAuthenticated)
                             {
-                                <a class="btn btn-outline-primary" data-bs-target="#loginModal" data-bs-toggle="modal" href="#">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                    Войти
-                                </a>
+                                <div class="d-none d-md-block">
+                                    <a class="btn btn-outline-primary" data-bs-target="#loginModal" data-bs-toggle="modal" href="#">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                        Войти
+                                    </a>
+                                </div>
+
+                                <div class="d-block d-md-none">
+                                    <a class="nav-link text-dark active" data-bs-target="#loginModal" data-bs-toggle="modal" href="#">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                        Войти
+                                    </a>
+                                </div>
                             }
                             else
                             {
-                                <a class="btn btn-outline-danger" asp-action="Logout" asp-controller="Users" onclick="return confirm('Вы уверены, что хотите выйти?')">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    Выйти
-                                </a>
+                                <div class="d-none d-md-block">
+                                    <a class="btn btn-outline-danger" asp-action="Logout" asp-controller="Users" onclick="return confirm('Вы уверены, что хотите выйти?')">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Выйти
+                                    </a>
+                                </div>
+                                <div class="d-block d-md-none">
+                                    <a class="nav-link text-dark active" asp-action="Logout" asp-controller="Users" onclick="return confirm('Вы уверены, что хотите выйти?')">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Выйти
+                                    </a>
+                                </div>
                             }
                         </li>
                     </ul>

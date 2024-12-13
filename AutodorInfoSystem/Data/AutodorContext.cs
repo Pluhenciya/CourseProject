@@ -221,10 +221,10 @@ public partial class AutodorContext : DbContext
 
             entity.Property(e => e.IdTask).HasColumnName("id_task");
             entity.Property(e => e.Description)
-                .HasMaxLength(45)
+                .HasColumnType("text")
                 .HasColumnName("description");
             entity.Property(e => e.Name)
-                .HasMaxLength(45)
+                .HasMaxLength(200)
                 .HasColumnName("name");
             entity.Property(e => e.IdProject).HasColumnName("id_project");
 

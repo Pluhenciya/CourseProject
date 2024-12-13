@@ -82,7 +82,7 @@ namespace AutodorInfoSystem.Controllers
                     {
                         IdTask = idTask,
                         IdWorker = findWorker.IdWorker,
-                        Quantity = worker.Quantity,
+                        Quantity = worker.Quantity ?? 0,
                     });
                 }
                 else
@@ -94,12 +94,18 @@ namespace AutodorInfoSystem.Controllers
                     {
                         IdTask = idTask,
                         IdWorker = idWorker,
-                        Quantity = worker.Quantity
+                        Quantity = worker.Quantity ?? 0
                     });
                 }
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Tasks", new { id = idTask }); 
             }
+            if (worker.Salary == null)
+            {
+                ModelState["Salary"].Errors.Clear();
+                ModelState.AddModelError("Salary", "Введенное не является зарплптой");
+            }
+            ViewBag.IdTask = idTask;
             return View(worker);
         }
 
@@ -144,7 +150,7 @@ namespace AutodorInfoSystem.Controllers
                         {
                             IdTask = idTask,
                             IdWorker = findWorker.IdWorker,
-                            Quantity = worker.Quantity,
+                            Quantity = worker.Quantity ?? 0,
                         });
                     }
                     else
@@ -156,7 +162,7 @@ namespace AutodorInfoSystem.Controllers
                         {
                             IdTask = idTask,
                             IdWorker = idWorker,
-                            Quantity = worker.Quantity
+                            Quantity = worker.Quantity ?? 0
                         });
                     }
                     await _context.SaveChangesAsync();
@@ -174,6 +180,12 @@ namespace AutodorInfoSystem.Controllers
                 }
                 return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
+            if (worker.Salary == null)
+            {
+                ModelState["Salary"].Errors.Clear();
+                ModelState.AddModelError("Salary", "Введенное не является зарплптой");
+            }
+            ViewBag.IdTask = idTask;
             return View(worker);
         }
 

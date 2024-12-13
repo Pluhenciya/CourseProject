@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,11 +75,14 @@ using (var scope = app.Services.CreateScope())
             Login = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password)
         };
+        var user = dbContext.Users.Find(username);
+        if (user == null)
+            return;
         dbContext.Users.Add(createdUser);
         dbContext.SaveChanges();
         dbContext.Admins.Add(new Admin
         {
-            UsersIdUser = 1
+            UsersIdUser = user.IdUser
         });
         dbContext.SaveChanges();
     }
