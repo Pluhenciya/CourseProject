@@ -1,5 +1,6 @@
 ﻿using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
+using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,12 @@ namespace AutodorInfoSystem.Controllers
     public class ProjectsController : Controller
     {
         private readonly AutodorContext _context;
+        private readonly ExcelService _excelService;
 
-        public ProjectsController(AutodorContext context)
+        public ProjectsController(AutodorContext context, ExcelService excelService)
         {
             _context = context;
+            _excelService = excelService;
         }
 
         // GET: Projects
@@ -206,6 +209,33 @@ namespace AutodorInfoSystem.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DownloadTable(int idProject)
+        {
+            if (idProject == null)
+            {
+                return NotFound();
+            }
+
+            var project = await _context.Projects
+                .Include(p => p.Tasks)
+                .ThenInclude(p => p.MaterialsHasTasks)
+                .ThenInclude(p => p.IdMaterialNavigation)
+                .Include(p => p.Tasks)
+                .ThenInclude(p => p.EquipmentHasTasks)
+                .ThenInclude(p => p.IdEquipmentNavigation)
+                .Include(p => p.Tasks)
+                .ThenInclude(p => p.WorkersHasTasks)
+                .ThenInclude(p => p.IdWorkerNavigation)
+                .FirstOrDefaultAsync(p => p.IdProject == idProject);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return File(await _excelService.GenerateProjectReportAsync(project), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{project.Name}.xlsx");
         }
 
         private bool ProjectExists(int id)

@@ -46,6 +46,9 @@
         <a class="btn btn-secondary mb-2" asp-action="Index">
             <i class="fas fa-arrow-left"></i> Назад к списку
         </a>
+        <a class="btn btn-success mb-2" asp-action="DownloadTable" asp-route-idProject="@Model.IdProject">
+            <i class="fas fa-download"></i> Скачать таблицу
+        </a>
         @if (User.Identity.IsAuthenticated)
         {
             <a class="btn btn-primary mb-2" asp-action="Edit" asp-route-id="@Model.IdProject">

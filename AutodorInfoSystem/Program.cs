@@ -21,6 +21,7 @@ builder.Services.AddDbContext<AutodorContext>(options =>
 
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<TokenService, TokenService>();
+builder.Services.AddScoped<ExcelService>();
 
 builder.Services.AddAuthentication(options =>
 {
