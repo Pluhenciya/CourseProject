@@ -91,7 +91,7 @@ namespace AutodorInfoSystem.Controllers
                 }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = project.IdProject });
             }
 
             // Если модель не валидна, повторно получаем проектировщиков для передачи в представление
