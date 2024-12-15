@@ -146,7 +146,7 @@ namespace AutodorInfoSystem.Migrations
                 AFTER UPDATE ON materials
                 FOR EACH ROW
                 BEGIN
-                    UPDATE material_has_tasks
+                    UPDATE materials_has_tasks
                     SET cost = NEW.price * quantity
                     WHERE id_material = NEW.id_material;
                 END;
@@ -277,7 +277,7 @@ namespace AutodorInfoSystem.Migrations
                 AFTER UPDATE ON workers
                 FOR EACH ROW
                 BEGIN
-                    UPDATE worker_has_tasks
+                    UPDATE workers_has_tasks
                     SET cost = NEW.salary * quantity
                     WHERE id_worker = NEW.id_worker;
                 END;

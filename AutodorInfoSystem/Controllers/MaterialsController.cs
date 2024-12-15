@@ -41,6 +41,78 @@ namespace AutodorInfoSystem.Controllers
             return View(await _context.Materials.ToListAsync());
         }
 
+        public IActionResult SimpleCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SimpleCreate(Material material)
+        {
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                _context.Materials.Add(material);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(material);
+        }
+
+        public async Task<IActionResult> SimpleEdit(int id)
+        {
+            var material = await _context.Materials.FindAsync(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+            return View(material);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SimpleEdit(int id, Material material)
+        {
+            if (id != material.IdMaterial)
+            {
+                return NotFound();
+            }
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(material);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MaterialExists(material.IdMaterial))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(material);
+        }
+
+        public async Task<IActionResult> SimpleDelete(int id)
+        {
+            var material = await _context.Materials.FindAsync(id);
+            if (material != null)
+            {
+                _context.Materials.Remove(material);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Materials/Details/5
         public async Task<IActionResult> Details(int? id)
         {

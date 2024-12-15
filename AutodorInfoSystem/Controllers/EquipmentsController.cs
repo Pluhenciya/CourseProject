@@ -35,6 +35,78 @@ namespace AutodorInfoSystem.Controllers
             return View(await _context.Equipment.ToListAsync());
         }
 
+        public IActionResult SimpleCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SimpleCreate(Equipment equipment)
+        {
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                _context.Equipment.Add(equipment);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(equipment);
+        }
+
+        public async Task<IActionResult> SimpleEdit(int id)
+        {
+            var equipment = await _context.Equipment.FindAsync(id);
+            if (equipment == null)
+            {
+                return NotFound();
+            }
+            return View(equipment);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SimpleEdit(int id, Equipment equipment)
+        {
+            if (id != equipment.IdEquipment)
+            {
+                return NotFound();
+            }
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(equipment);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EquipmentExists(equipment.IdEquipment))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(equipment);
+        }
+
+        public async Task<IActionResult> SimpleDelete(int id)
+        {
+            var equipment = await _context.Equipment.FindAsync(id);
+            if (equipment != null)
+            {
+                _context.Equipment.Remove(equipment);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(int? id)
         {

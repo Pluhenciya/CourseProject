@@ -41,6 +41,78 @@ namespace AutodorInfoSystem.Controllers
             return View(await _context.Workers.ToListAsync());
         }
 
+        public IActionResult SimpleCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SimpleCreate(Worker worker)
+        {
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                _context.Workers.Add(worker);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(worker);
+        }
+
+        public async Task<IActionResult> SimpleEdit(int id)
+        {
+            var worker = await _context.Workers.FindAsync(id);
+            if (worker == null)
+            {
+                return NotFound();
+            }
+            return View(worker);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SimpleEdit(int id, Worker worker)
+        {
+            if (id != worker.IdWorker)
+            {
+                return NotFound();
+            }
+            ModelState.Remove("Quantity");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(worker);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!WorkerExists(worker.IdWorker))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(worker);
+        }
+
+        public async Task<IActionResult> SimpleDelete(int id)
+        {
+            var worker = await _context.Workers.FindAsync(id);
+            if (worker != null)
+            {
+                _context.Workers.Remove(worker);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -33,7 +33,7 @@
                     </ul>
                     @if(User.IsInRole("Admin"))
                     {
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="navbar-nav mb-2 mb-lg-0">
                             <li class="nav-item">
                                 <a class="nav-link text-dark active" asp-controller="Users" asp-action="Index">
                                     <i class="fa-solid fa-user"></i>
@@ -41,6 +41,30 @@
                                 </a>
                             </li>
 						</ul>
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark active" asp-controller="Materials" asp-action="Index">
+                                    <i class="fa-solid fa-box"></i>
+                                    Материалы
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark active" asp-controller="Equipments" asp-action="Index">
+                                    <i class="fa-solid fa-truck"></i>
+                                    Спецтехника
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark active" asp-controller="Workers" asp-action="Index">
+                                    <i class="fa-solid fa-users"></i>
+                                    Рабочие
+                                </a>
+                            </li>
+                        </ul>
 					}
                     <ul class="navbar-nav ms-auto">
                         <!-- Используйте ms-auto для выравнивания вправо -->
