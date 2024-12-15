@@ -4,9 +4,6 @@ using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,6 +66,9 @@ using (var scope = app.Services.CreateScope())
     if (dbContext.Database.GetPendingMigrations().Any())
     {
         dbContext.Database.Migrate();
+    }
+    if (!dbContext.Admins.Any())
+    {
         var username = Environment.GetEnvironmentVariable("ADMIN_LOGIN");
         var password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
         var createdUser = new User
@@ -76,10 +76,10 @@ using (var scope = app.Services.CreateScope())
             Login = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password)
         };
-        
+
         dbContext.Users.Add(createdUser);
         dbContext.SaveChanges();
-        var user = dbContext.Users.Find(username);
+        var user = dbContext.Users.FirstOrDefault(u => u.Login == username);
         if (user == null)
             return;
         dbContext.Admins.Add(new Admin
@@ -88,6 +88,7 @@ using (var scope = app.Services.CreateScope())
         });
         dbContext.SaveChanges();
     }
+
 }
 
 // Configure the HTTP request pipeline.
