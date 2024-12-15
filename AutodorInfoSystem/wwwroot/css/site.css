@@ -1,48 +1,63 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(45deg, #faba3c 0%, #ddbb97 100%);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    color: #fff;
+    color: #2b2b2b; /* Темный цвет текста */
 }
 
 header {
     margin-bottom: 20px;
 }
 
+.navbar {
+    background-color: #ebebeb; /* Светлый фон для навигации */
+}
+
 .navbar-brand {
     font-weight: bold;
+    color: #a0503a; /* Цвет для названия */
 }
 
 .navbar-nav .nav-link {
     margin-right: 15px;
+    color: #6c6c6c; /* Цвет ссылок */
     transition: color 0.3s;
 }
 
     .navbar-nav .nav-link:hover {
-        color: #007bff;
+        color: #faba3c; /* Цвет при наведении */
     }
 
     .navbar-nav .nav-link.active {
-        color: #007bff;
+        color: #a0503a; /* Цвет активной ссылки */
         font-weight: bold;
     }
 
 .btn-outline-primary {
+    border-color: #a0503a; /* Цвет рамки кнопки */
+    color: #a0503a; /* Цвет текста кнопки */
     transition: background-color 0.3s, color 0.3s;
 }
 
     .btn-outline-primary:hover {
-        background-color: #007bff;
-        color: #fff;
+        background-color: #a0503a; /* Цвет фона при наведении */
+        color: #fff; /* Цвет текста при наведении */
     }
 
 .card {
     transition: transform 0.3s;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: black;
+    background-color: #ffffff; /* Белый фон для карточек */
+    color: #2b2b2b; /* Темный текст в карточках */
+    border: 1px solid #ddbb97; /* Светло-коричневая рамка */
+}
+
+.card-header {
+    background-color: #faba3c; /* Цвет фона заголовка карточки */
+    color: #2b2b2b; /* Цвет текста заголовка */
 }
 
 .card:hover {
@@ -50,14 +65,14 @@ header {
 }
 
 footer {
-    background-color: #343a40;
+    background-color: #343a40; /* Темный фон для подвала */
     color: #fff;
     padding: 20px 0;
     margin-top: auto;
 }
 
     footer a {
-        color: #ffc107;
+        color: #faba3c; /* Цвет ссылок в подвале */
         text-decoration: none;
     }
 
@@ -67,65 +82,52 @@ footer {
 
 .modal-content {
     border-radius: 10px;
+    background-color: #fff; /* Цвет фона модального окна */
+    color: #2b2b2b; /* Цвет текста в модальном окне */
 }
 
 .bg-gradient {
-    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-    color: #fff;
-}
-
-@media (max-width: 768px) {
-    .navbar-nav {
-        text-align: center;
-    }
-
-        .navbar-nav .nav-link {
-            margin-right: 0;
-            margin-bottom: 10px;
-        }
+    background: linear-gradient(45deg, #faba3c 0%, #ddbb97 100%);
+    color: #2b2b2b; /* Цвет текста для градиента */
 }
 
 .container {
     flex: 1;
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-control {
-    border-radius: 10px;
-}
-
 .btn-primary {
-    background-color: #6a11cb;
+    background-color: #a0503a; /* Более насыщенный цвет для кнопки "Редактировать" */
     border: none;
+    color: #fff; /* Белый текст на кнопке */
     transition: background-color 0.3s;
 }
 
     .btn-primary:hover {
-        background-color: #2575fc;
+        background-color: #bd8e89; /* Цвет кнопки при наведении */
+    }
+
+.btn-danger {
+    background-color: #dc3545; /* Яркий красный цвет для кнопки "Удалить" */
+    border: none;
+    color: #fff; /* Белый текст на кнопке */
+}
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Темнее красный при наведении */
+    }
+
+.btn-success {
+    background-color: #28a745; /* Яркий зеленый цвет для кнопки "Создать новый" */
+    border: none;
+    color: #fff; /* Белый текст на кнопке */
+}
+
+    .btn-success:hover {
+        background-color: #218838; /* Темнее зеленый при наведении */
     }
 
 .text-danger {
-    display: flex;
-    align-items: center;
-}
-
-    .text-danger i {
-        margin-right: 5px;
-    }
-
-.tooltip-inner {
-    background-color: #6a11cb;
-}
-
-.tooltip-arrow {
-    border-top-color: #6a11cb;
-}
-
-.modal-dialog {
-    color: black;
+    color: #dc3545; /* Цвет для сообщений об ошибках */
 }
 
 .details-header {
@@ -139,14 +141,32 @@ footer {
         margin-bottom: 0;
     }
 
-.details-actions a {
-    margin-right: 10px;
 }
 
-    .details-actions a:last-child {
-        margin-right: 0;
-    }
+.details-actions a:last-child {
+    margin-right: 0;
+}
 
 .tasks-table th, .tasks-table td {
     vertical-align: middle;
+}
+
+.table {
+    background-color: #ffffff; /* Белый фон для таблиц */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #ebebeb; /* Светло-серый фон для нечетных строк */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f0e68c; /* Цвет фона при наведении на строку */
+}
+
+.tooltip-inner {
+    background-color: #faba3c; /* Цвет фона подсказки */
+}
+
+.tooltip-arrow {
+    border-top-color: #faba3c; /* Цвет стрелки подсказки */
 }
