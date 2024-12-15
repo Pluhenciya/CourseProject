@@ -1,0 +1,40 @@
+﻿@model AutodorInfoSystem.Models.Material
+
+@{
+    ViewData["Title"] = "Подтверждение количества";
+}
+
+<div class="container mt-4">
+    <div class="details-header">
+        <h4>Подтверждение количества материала</h4>
+    </div>
+    <div class="card bg-light text-dark">
+        <div class="card-body">
+            <h5 class="card-title">Материал: @Model.Name</h5>
+            <dl class="row">
+                <dt class="col-sm-4">Существующее количество:</dt>
+                <dd class="col-sm-8">@ViewBag.ExistingRelation.Quantity</dd>
+                <dt class="col-sm-4">Новое количество:</dt>
+                <dd class="col-sm-8">@ViewBag.NewQuantity</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="details-actions mt-3">
+        <form asp-action="UpdateQuantity" method="post">
+            <input type="hidden" name="idTask" value="@ViewBag.IdTask" />
+            <input type="hidden" name="idMaterial" value="@ViewBag.ExistingRelation.IdMaterial" />
+            <input type="hidden" name="newQuantity" value="@ViewBag.NewQuantity" />
+
+            <button type="submit" name="action" value="add" class="btn btn-success mb-2">
+                <i class="fas fa-plus-circle"></i> Добавить к существующему количеству
+            </button>
+            <button type="submit" name="action" value="replace" class="btn btn-warning mb-2">
+                <i class="fas fa-exchange-alt"></i> Заменить существующее количество
+            </button>
+            <a class="btn btn-secondary mb-2" onclick="window.history.back();">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+        </form>
+    </div>
+</div>

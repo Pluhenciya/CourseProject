@@ -78,12 +78,27 @@ namespace AutodorInfoSystem.Controllers
                 var findWorker = await _context.Workers.FirstOrDefaultAsync(e => e.Name == worker.Name);
                 if (findWorker != null)
                 {
-                    _context.Add(new WorkersHasTask
+                    // Проверяем, существует ли уже связь между работником и задачей
+                    var existingRelation = await _context.WorkersHasTasks
+                        .FirstOrDefaultAsync(wht => wht.IdTask == idTask && wht.IdWorker == findWorker.IdWorker);
+
+                    if (existingRelation != null)
                     {
-                        IdTask = idTask,
-                        IdWorker = findWorker.IdWorker,
-                        Quantity = worker.Quantity ?? 0,
-                    });
+                        // Перенаправляем на страницу подтверждения
+                        ViewBag.ExistingRelation = existingRelation;
+                        ViewBag.NewQuantity = worker.Quantity ?? 0;
+                        ViewBag.IdTask = idTask;
+                        return View("ConfirmQuantity", worker); // Создайте представление ConfirmQuantity
+                    }
+                    else
+                    {
+                        _context.Add(new WorkersHasTask
+                        {
+                            IdTask = idTask,
+                            IdWorker = findWorker.IdWorker,
+                            Quantity = worker.Quantity ?? 0,
+                        });
+                    }
                 }
                 else
                 {
@@ -98,16 +113,17 @@ namespace AutodorInfoSystem.Controllers
                     });
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", new { id = idTask }); 
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             if (worker.Salary == null)
             {
                 ModelState["Salary"].Errors.Clear();
-                ModelState.AddModelError("Salary", "Введенное не является зарплптой");
+                ModelState.AddModelError("Salary", "Введенное не является зарплатой");
             }
             ViewBag.IdTask = idTask;
             return View(worker);
         }
+
 
         // GET: Workers/Edit/5
         public async Task<IActionResult> Edit(int? id, int  idTask)
@@ -146,19 +162,34 @@ namespace AutodorInfoSystem.Controllers
                     var findWorker = await _context.Workers.FirstOrDefaultAsync(e => e.Name == worker.Name);
                     if (findWorker != null)
                     {
-                        _context.Add(new WorkersHasTask
+                        // Проверяем, существует ли уже связь между работником и задачей
+                        var existingRelation = await _context.WorkersHasTasks
+                            .FirstOrDefaultAsync(wht => wht.IdTask == idTask && wht.IdWorker == findWorker.IdWorker);
+
+                        if (existingRelation != null)
                         {
-                            IdTask = idTask,
-                            IdWorker = findWorker.IdWorker,
-                            Quantity = worker.Quantity ?? 0,
-                        });
+                            // Перенаправляем на страницу подтверждения
+                            ViewBag.ExistingRelation = existingRelation;
+                            ViewBag.NewQuantity = worker.Quantity ?? 0;
+                            ViewBag.IdTask = idTask;
+                            return View("ConfirmQuantity", worker); // Создайте представление ConfirmQuantity
+                        }
+                        else
+                        {
+                            _context.Update(new WorkersHasTask
+                            {
+                                IdTask = idTask,
+                                IdWorker = findWorker.IdWorker,
+                                Quantity = worker.Quantity ?? 0,
+                            });
+                        }
                     }
                     else
                     {
-                        _context.Workers.Add(worker);
+                        _context.Workers.Update(worker);
                         await _context.SaveChangesAsync();
                         var idWorker = _context.Workers.FirstOrDefault(e => e.Name == worker.Name).IdWorker;
-                        _context.WorkersHasTasks.Add(new WorkersHasTask
+                        _context.WorkersHasTasks.Update(new WorkersHasTask
                         {
                             IdTask = idTask,
                             IdWorker = idWorker,
@@ -183,11 +214,35 @@ namespace AutodorInfoSystem.Controllers
             if (worker.Salary == null)
             {
                 ModelState["Salary"].Errors.Clear();
-                ModelState.AddModelError("Salary", "Введенное не является зарплптой");
+                ModelState.AddModelError("Salary", "Введенное не является зарплатой");
             }
             ViewBag.IdTask = idTask;
             return View(worker);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity(int idTask, int idWorker, int newQuantity, string action)
+        {
+            var existingRelation = await _context.WorkersHasTasks
+                .FirstOrDefaultAsync(wht => wht.IdTask == idTask && wht.IdWorker == idWorker);
+
+            if (existingRelation != null)
+            {
+                if (action == "add")
+                {
+                    existingRelation.Quantity += newQuantity;
+                }
+                else if (action == "replace")
+                {
+                    existingRelation.Quantity = newQuantity;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
+        }
+
 
         // GET: Workers/Delete/5
         public async Task<IActionResult> Delete(int? id, int idTask)

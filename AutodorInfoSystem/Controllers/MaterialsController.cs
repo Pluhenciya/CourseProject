@@ -78,12 +78,27 @@ namespace AutodorInfoSystem.Controllers
                 var findMaterial = await _context.Materials.FirstOrDefaultAsync(e => e.Name == material.Name);
                 if (findMaterial != null)
                 {
-                    _context.Add(new MaterialsHasTask
+                    // Проверяем, существует ли уже связь между материалом и задачей
+                    var existingRelation = await _context.MaterialsHasTasks
+                        .FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdMaterial == findMaterial.IdMaterial);
+
+                    if (existingRelation != null)
                     {
-                        IdTask = idTask,
-                        IdMaterial = findMaterial.IdMaterial,
-                        Quantity = material.Quantity ?? 0,
-                    });
+                        // Перенаправляем на страницу подтверждения
+                        ViewBag.ExistingRelation = existingRelation;
+                        ViewBag.NewQuantity = material.Quantity ?? 0;
+                        ViewBag.IdTask = idTask;
+                        return View("ConfirmQuantity", material); // Создайте представление ConfirmQuantity
+                    }
+                    else
+                    {
+                        _context.Add(new MaterialsHasTask
+                        {
+                            IdTask = idTask,
+                            IdMaterial = findMaterial.IdMaterial,
+                            Quantity = material.Quantity ?? 0,
+                        });
+                    }
                 }
                 else
                 {
@@ -98,7 +113,7 @@ namespace AutodorInfoSystem.Controllers
                     });
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tasks", new { id = idTask }); 
+                return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             if (material.Price == null)
             {
@@ -107,6 +122,7 @@ namespace AutodorInfoSystem.Controllers
             }
             return View(material);
         }
+
 
         // GET: Materials/Edit/5
         public async Task<IActionResult> Edit(int? id, int idTask)
@@ -145,12 +161,27 @@ namespace AutodorInfoSystem.Controllers
                     var findMaterial = await _context.Materials.FirstOrDefaultAsync(e => e.Name == material.Name);
                     if (findMaterial != null)
                     {
-                        _context.Update(new MaterialsHasTask
+                        // Проверяем, существует ли уже связь между материалом и задачей
+                        var existingRelation = await _context.MaterialsHasTasks
+                            .FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdMaterial == findMaterial.IdMaterial);
+
+                        if (existingRelation != null)
                         {
-                            IdTask = idTask,
-                            IdMaterial = findMaterial.IdMaterial,
-                            Quantity = material.Quantity ?? 0,
-                        });
+                            // Перенаправляем на страницу подтверждения
+                            ViewBag.ExistingRelation = existingRelation;
+                            ViewBag.NewQuantity = material.Quantity ?? 0;
+                            ViewBag.IdTask = idTask;
+                            return View("ConfirmQuantity", material); // Создайте представление ConfirmQuantity
+                        }
+                        else
+                        {
+                            _context.Update(new MaterialsHasTask
+                            {
+                                IdTask = idTask,
+                                IdMaterial = findMaterial.IdMaterial,
+                                Quantity = material.Quantity ?? 0,
+                            });
+                        }
                     }
                     else
                     {
@@ -188,6 +219,7 @@ namespace AutodorInfoSystem.Controllers
             return View(material);
         }
 
+
         // GET: Materials/Delete/5
         public async Task<IActionResult> Delete(int? id, int idTask)
         {
@@ -195,6 +227,25 @@ namespace AutodorInfoSystem.Controllers
             if (materialsHasTask != null)
             {
                 _context.MaterialsHasTasks.Remove(materialsHasTask);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity(int idTask, int idMaterial, int newQuantity, string action)
+        {
+            var existingRelation = await _context.MaterialsHasTasks
+                .FirstOrDefaultAsync(mht => mht.IdTask == idTask && mht.IdMaterial == idMaterial);
+
+            if (action == "add")
+            {
+                existingRelation.Quantity += newQuantity;
+            }
+            else if (action == "replace")
+            {
+                existingRelation.Quantity = newQuantity;
             }
 
             await _context.SaveChangesAsync();

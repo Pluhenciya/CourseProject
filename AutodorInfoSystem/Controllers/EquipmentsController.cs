@@ -72,12 +72,27 @@ namespace AutodorInfoSystem.Controllers
                 var findEquipment = await _context.Equipment.FirstOrDefaultAsync(e => e.Name == equipment.Name);
                 if (findEquipment != null)
                 {
-                    _context.Add(new EquipmentHasTask
+                    var existingRelation = await _context.EquipmentHasTasks
+                        .FirstOrDefaultAsync(eht => eht.IdTask == idTask && eht.IdEquipment == findEquipment.IdEquipment);
+
+                    if (existingRelation != null)
                     {
-                        IdTask = idTask,
-                        IdEquipment = findEquipment.IdEquipment,
-                        Quantity = equipment.Quantity ?? 0,
-                    });
+                        // Здесь вы можете добавить логику для запроса у пользователя
+                        // Например, перенаправить на страницу с подтверждением
+                        ViewBag.ExistingRelation = existingRelation;
+                        ViewBag.NewQuantity = equipment.Quantity ?? 0;
+                        ViewBag.IdTask = idTask;
+                        return View("ConfirmQuantity", equipment); // Создайте представление ConfirmQuantity
+                    }
+                    else
+                    {
+                        _context.Add(new EquipmentHasTask
+                        {
+                            IdTask = idTask,
+                            IdEquipment = findEquipment.IdEquipment,
+                            Quantity = equipment.Quantity ?? 0,
+                        });
+                    }
                 }
                 else
                 {
@@ -140,12 +155,27 @@ namespace AutodorInfoSystem.Controllers
                     var findEquipment = await _context.Equipment.FirstOrDefaultAsync(e => e.Name == equipment.Name);
                     if (findEquipment != null)
                     {
-                        _context.Update(new EquipmentHasTask
+                        var existingRelation = await _context.EquipmentHasTasks
+                        .FirstOrDefaultAsync(eht => eht.IdTask == idTask && eht.IdEquipment == findEquipment.IdEquipment);
+
+                        if (existingRelation != null)
                         {
-                            IdTask = idTask,
-                            IdEquipment = findEquipment.IdEquipment,
-                            Quantity = equipment.Quantity ?? 0
-                        });
+                            // Здесь вы можете добавить логику для запроса у пользователя
+                            // Например, перенаправить на страницу с подтверждением
+                            ViewBag.ExistingRelation = existingRelation;
+                            ViewBag.NewQuantity = equipment.Quantity ?? 0;
+                            ViewBag.IdTask = idTask;
+                            return View("ConfirmQuantity", equipment); // Создайте представление ConfirmQuantity
+                        }
+                        else
+                        {
+                            _context.Update(new EquipmentHasTask
+                            {
+                                IdTask = idTask,
+                                IdEquipment = findEquipment.IdEquipment,
+                                Quantity = equipment.Quantity ?? 0
+                            });
+                        }
                     }
                     else
                     {
@@ -195,6 +225,26 @@ namespace AutodorInfoSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Tasks", new { id = idTask });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity(int idTask, int idEquipment, int newQuantity, string action)
+        {
+            var existingRelation = await _context.EquipmentHasTasks
+                .FirstOrDefaultAsync(eht => eht.IdTask == idTask && eht.IdEquipment == idEquipment);
+
+            if (action == "add")
+            {
+                existingRelation.Quantity += newQuantity;
+            }
+            else if (action == "replace")
+            {
+                existingRelation.Quantity = newQuantity;
+            }
+            _context.EquipmentHasTasks.Update(existingRelation);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "Tasks", new { id = idTask });
+        }
+
 
         private bool EquipmentExists(int id)
         {

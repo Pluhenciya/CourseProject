@@ -170,3 +170,7 @@ footer {
 .tooltip-arrow {
     border-top-color: #faba3c; /* Цвет стрелки подсказки */
 }
+
+input{
+    margin-bottom: 1%;
+}
