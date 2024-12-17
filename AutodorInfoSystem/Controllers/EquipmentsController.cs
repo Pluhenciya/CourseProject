@@ -18,7 +18,7 @@ namespace AutodorInfoSystem.Controllers
         public JsonResult GetSimilarNames(string name)
         {
             var similarItems = _context.Equipment
-                .Where(e => e.Name.Contains(name))
+                .Where(e => e.Name.Contains(name) && !e.IsDeleted)
                 .Select(e => new
                 {
                     e.Name,
@@ -32,7 +32,7 @@ namespace AutodorInfoSystem.Controllers
         // GET: Equipments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Equipment.ToListAsync());
+            return View(await _context.Equipment.Where(e => !e.IsDeleted).ToListAsync());
         }
 
         public IActionResult SimpleCreate()
@@ -101,7 +101,8 @@ namespace AutodorInfoSystem.Controllers
             var equipment = await _context.Equipment.FindAsync(id);
             if (equipment != null)
             {
-                _context.Equipment.Remove(equipment);
+                equipment.IsDeleted = true;
+                _context.Equipment.Update(equipment);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

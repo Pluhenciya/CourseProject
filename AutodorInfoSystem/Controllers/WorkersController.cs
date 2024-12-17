@@ -24,11 +24,11 @@ namespace AutodorInfoSystem.Controllers
         public JsonResult GetSimilarNames(string name)
         {
             var similarItems = _context.Workers
-                .Where(e => e.Name.Contains(name))
-                .Select(e => new
+                .Where(w => w.Name.Contains(name) && !w.IsDeleted)
+                .Select(w => new
                 {
-                    e.Name,
-                    e.Salary // Возвращаем также цену
+                    w.Name,
+                    w.Salary // Возвращаем также цену
                 })
                 .ToList();
 
@@ -38,7 +38,7 @@ namespace AutodorInfoSystem.Controllers
         // GET: Workers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Workers.ToListAsync());
+            return View(await _context.Workers.Where(w => !w.IsDeleted).ToListAsync());
         }
 
         public IActionResult SimpleCreate()
@@ -107,7 +107,8 @@ namespace AutodorInfoSystem.Controllers
             var worker = await _context.Workers.FindAsync(id);
             if (worker != null)
             {
-                _context.Workers.Remove(worker);
+                worker.IsDeleted = true;
+                _context.Workers.Update(worker);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

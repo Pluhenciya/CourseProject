@@ -26,5 +26,8 @@ public partial class Material
     [Range(1, int.MaxValue, ErrorMessage = "Количество вышло за допустимый диапозон")]
     public int? Quantity { get; set; }
 
+    [Column("is_deleted")]
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<MaterialsHasTask> MaterialsHasTasks { get; set; } = new List<MaterialsHasTask>();
 }

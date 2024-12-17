@@ -4,6 +4,7 @@ using AutodorInfoSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutodorInfoSystem.Migrations
 {
     [DbContext(typeof(AutodorContext))]
-    partial class AutodorContextModelSnapshot : ModelSnapshot
+    [Migration("20241216202042_AddIsDeleted")]
+    partial class AddIsDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,8 +49,7 @@ namespace AutodorInfoSystem.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdEquipment"));
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -107,8 +109,7 @@ namespace AutodorInfoSystem.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdMaterial"));
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MeasurementUnit")
                         .HasMaxLength(5)
@@ -300,8 +301,7 @@ namespace AutodorInfoSystem.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdWorker"));
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -387,7 +387,6 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Equipment", "IdEquipmentNavigation")
                         .WithMany("EquipmentHasTasks")
                         .HasForeignKey("IdEquipment")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_equipment_has_tasks_equipment1");
 
@@ -408,7 +407,6 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Material", "IdMaterialNavigation")
                         .WithMany("MaterialsHasTasks")
                         .HasForeignKey("IdMaterial")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_materials_has_tasks_materials1");
 
@@ -453,7 +451,6 @@ namespace AutodorInfoSystem.Migrations
                     b.HasOne("AutodorInfoSystem.Models.Task", "IdTaskNavigation")
                         .WithMany("WorkersHasTasks")
                         .HasForeignKey("IdTask")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_workers_has_tasks_tasks1");
 

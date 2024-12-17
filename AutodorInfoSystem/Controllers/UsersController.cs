@@ -167,7 +167,7 @@ namespace AutodorInfoSystem.Controllers
 
             Response.Cookies.Append("A", _tokenService.CreateToken(userExist));
 
-            return Redirect(Request.Headers["Referer"].ToString());
+            return Redirect("~/");
         }
 
         public IActionResult Logout()

@@ -11,7 +11,7 @@ namespace AutodorInfoSystem.Services
 
             using (var workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add(project.Name);
+                var worksheet = workbook.Worksheets.Add($"Проект {project.IdProject}");
                 GenerateProjectWorksheet(worksheet, project);
                 await System.Threading.Tasks.Task.Run(() => workbook.SaveAs(memoryStream));
             }
@@ -29,6 +29,7 @@ namespace AutodorInfoSystem.Services
 
             worksheet.Cell(2, 1).Value = $"по проекту \"{project.Name}\"";
             worksheet.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell(2, 1).Style.Alignment.WrapText = true;
             worksheet.Cell(2, 1).Style.Font.Bold = true;
             worksheet.Range(worksheet.Cell(2, 1), worksheet.Cell(2, 6)).Merge();
 
@@ -105,6 +106,7 @@ namespace AutodorInfoSystem.Services
             worksheet.Cell(row, 6).Value = project.Cost;
             worksheet.Cell(row, 6).Style.Font.Bold = true;
             worksheet.Columns().AdjustToContents();
+            worksheet.Rows().AdjustToContents();
             worksheet.Range(worksheet.Cell(1, 1), worksheet.Cell(row, 6)).Style.Border.SetBottomBorder(XLBorderStyleValues.Medium);
             worksheet.Range(worksheet.Cell(1, 1), worksheet.Cell(row, 6)).Style.Border.SetLeftBorder(XLBorderStyleValues.Medium);
             worksheet.Range(worksheet.Cell(1, 1), worksheet.Cell(row, 6)).Style.Border.SetRightBorder(XLBorderStyleValues.Medium);

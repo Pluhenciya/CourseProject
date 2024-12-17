@@ -23,5 +23,8 @@ public partial class Equipment
     [Range(1, int.MaxValue, ErrorMessage = "Количество вышло за допустимый диапозон")]
     public int? Quantity { get; set; }
 
+    [Column("is_deleted")]
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<EquipmentHasTask> EquipmentHasTasks { get; set; } = new List<EquipmentHasTask>();
 }

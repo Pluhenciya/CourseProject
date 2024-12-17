@@ -115,9 +115,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>
-                        О нас
-                    </h5>
+                    <h5>О нас</h5>
                     <p>
                         «Архангельскавтодор» — государственное казённое учреждение Архангельской области, осуществляющее полномочия государственного управления в сфере дорожного хозяйства региона.
                     </p>
@@ -125,22 +123,9 @@
                         Основные задачи агентства включают подготовку проектной документации, контроль за качеством выполняемых работ и обеспечение безопасности движения.
                     </p>
                 </div>
+                <div class="col-md-4"></div>
                 <div class="col-md-4">
-                    <h5>
-                        Быстрые ссылки
-                    </h5>
-                    <ul class="list-unstyled">
-                        <li>
-                            <a asp-controller="Projects" asp-action="Index">
-                                Проекты
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>
-                        Свяжитесь с нами
-                    </h5>
+                    <h5>Свяжитесь с нами</h5>
                     <div>
                         <strong>Телефоны:</strong><br>
                         <div>(8182) 20-64-55</div>
@@ -165,26 +150,25 @@
                     <h5 class="modal-title" id="loginModalLabel">
                         Вход
                     </h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
-                    </button>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
                     <form asp-controller="Users" asp-action="Login">
                         <div class="mb-3">
-                            <label class="form-label" for="login">
-                                Логин
-                            </label>
+                            <label class="form-label" for="login">Логин</label>
                             <input class="form-control" name="login" type="text" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="password">
-                                Пароль
-                            </label>
+                            <label class="form-label" for="password">Пароль</label>
                             <input class="form-control" name="password" type="password" />
                         </div>
-                        <button class="btn btn-primary" type="submit">
-                            Войти
-                        </button>
+                        <button class="btn btn-primary" type="submit">Войти</button>
                     </form>
                 </div>
             </div>
@@ -193,6 +177,18 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            // Открыть модальное окно, если есть сообщение об ошибке
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    console.log("Открытие модального окна");
+                $('#loginModal').modal('show');
+            </text>
+        }
+                    });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

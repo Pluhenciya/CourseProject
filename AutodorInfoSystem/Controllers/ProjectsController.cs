@@ -151,12 +151,11 @@ namespace AutodorInfoSystem.Controllers
                         return NotFound();
                     }
 
-                    // Удаляем старую связь с проектировщиком
-                    existingProject.ProjectersIdUsers.Clear();
-
                     // Если пользователь - администратор, добавляем нового проектировщика
                     if (User.IsInRole("Admin") && idProjecter.HasValue)
                     {
+                        // Удаляем старую связь с проектировщиком
+                        existingProject.ProjectersIdUsers.Clear();
                         var projecter = await _context.Projecters.FindAsync(idProjecter.Value);
                         if (projecter != null)
                         {

@@ -93,7 +93,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.IdEquipmentNavigation).WithMany(p => p.EquipmentHasTasks)
                 .HasForeignKey(d => d.IdEquipment)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_equipment_has_tasks_equipment1");
 
             entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.EquipmentHasTasks)
@@ -135,7 +135,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.MaterialsHasTasks)
                 .HasForeignKey(d => d.IdMaterial)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_materials_has_tasks_materials1");
 
             entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.MaterialsHasTasks)
@@ -281,7 +281,7 @@ public partial class AutodorContext : DbContext
 
             entity.HasOne(d => d.IdTaskNavigation).WithMany(p => p.WorkersHasTasks)
                 .HasForeignKey(d => d.IdTask)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_workers_has_tasks_tasks1");
 
             entity.HasOne(d => d.IdWorkerNavigation).WithMany(p => p.WorkersHasTasks)
