@@ -1,4 +1,25 @@
 services:
+  services:
+  api:
+    container_name: adis_api
+    hostname: adis_api
+    restart: always
+    ports:
+      - "5239:8080"
+    depends_on:
+      mysql_dbms:
+        condition: service_healthy
+        restart: true
+    image: adis_api
+    build:
+      context: ./AutodorInfoApi/.
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./environment/default.env
+        required: true
+    networks:
+      - backend
+
   mvc:
     container_name: adis_mvc
     hostname: adis_mvc
