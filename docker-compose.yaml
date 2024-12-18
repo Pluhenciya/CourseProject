@@ -1,5 +1,4 @@
 services:
-  services:
   api:
     container_name: adis_api
     hostname: adis_api
