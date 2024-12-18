@@ -109,17 +109,15 @@ namespace AutodorInfoSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var findMaterial = await _httpClientService.GetHttpClient()
-                    .GetFromJsonAsync<Material>($"Materials/one?name={material.Name}");
-                if (findMaterial != null)
+                var response = await _httpClientService.GetHttpClient().GetAsync($"Materials/one?name={material.Name}");
+                if (response.IsSuccessStatusCode)
                 {
-                    // Проверяем, существует ли уже связь между материалом и задачей
-                    var existingRelation = await _httpClientService.GetHttpClient()
-                        .GetFromJsonAsync<MaterialsHasTask>($"MaterialsHasTasks/{idTask}/{findMaterial.IdMaterial}");
+                    var findMaterial = await response.Content.ReadFromJsonAsync<Material>();
+                    response = await _httpClientService.GetHttpClient().GetAsync($"MaterialsHasTasks/{idTask}/{findMaterial.IdMaterial}");
 
-                    if (existingRelation != null)
+                    if (response.IsSuccessStatusCode)
                     {
-                        // Перенаправляем на страницу подтверждения
+                        var existingRelation = await response.Content.ReadFromJsonAsync<MaterialsHasTask>();
                         ViewBag.ExistingRelation = existingRelation;
                         ViewBag.NewQuantity = material.Quantity ?? 0;
                         ViewBag.IdTask = idTask;
