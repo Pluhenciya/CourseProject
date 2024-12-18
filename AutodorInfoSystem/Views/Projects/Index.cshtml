@@ -27,8 +27,12 @@
                                         <th scope="col">Описание проекта</th>
                                         <th scope="col">Завершен</th>
                                         <th scope="col">Стоимость проекта</th>
-                                        <th></th>
-                                        <th></th>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <th scope="col">Проектировщик</th>
+                                            <th></th>
+                                            <th></th>
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -41,6 +45,7 @@
                                             <td>@project.Cost руб.</td>
                                             @if (User.Identity.IsAuthenticated)
                                             {
+                                                <td>@project.ProjectersIdUsers.FirstOrDefault().LongName</td>
                                                 <td>
                                                     <a class="btn btn-primary" asp-action="Edit" asp-controller="Projects" asp-route-id="@project.IdProject">
                                                         <i class="fas fa-edit"></i>

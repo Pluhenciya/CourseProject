@@ -1,22 +1,21 @@
-﻿using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Models;
+﻿using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AutodorInfoSystem.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly AutodorContext _context;
         private readonly ExcelService _excelService;
+        private readonly HttpClientService _httpClientService;
 
-        public ProjectsController(AutodorContext context, ExcelService excelService)
+        public ProjectsController(ExcelService excelService, HttpClientService httpClientService)
         {
-            _context = context;
             _excelService = excelService;
+            _httpClientService = httpClientService;
         }
 
         // GET: Projects
@@ -25,15 +24,12 @@ namespace AutodorInfoSystem.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 if (User.IsInRole("Admin"))
-                    return View(await _context.Projects.ToListAsync());
+                    return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>("Projects"));
 
-                return View(await _context.Projects
-                    .Include(p => p.ProjectersIdUsers)
-                    .Where(p => p.ProjectersIdUsers.Any(p => p.IdUser == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
-                    .ToListAsync());
+                return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>($"Projects?idProjecter={Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)}"));
             }
             else
-                return View(await _context.Projects.Where(p => p.IsCompleted).ToListAsync());
+                return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>("Projects?isCompleted=true"));
         }
 
         // GET: Projects/Details/5
@@ -44,24 +40,22 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Tasks)
-                .Include(p => p.ProjectersIdUsers)
-                .FirstOrDefaultAsync(m => m.IdProject == id);
-            if (project == null)
+            var response = await _httpClientService.GetHttpClient().GetAsync($"Projects/{id}");
+            if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
-
+            var project = await response.Content.ReadFromJsonAsync<Project>();
             return View(project);
         }
 
         // GET: Projects/Create
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             if (User.IsInRole("Admin"))
             {
-                var projecters = await _context.Projecters.ToListAsync();
+                var projecters = await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Projecter>>("Projecters");
                 ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
             }
             return View();
@@ -70,6 +64,7 @@ namespace AutodorInfoSystem.Controllers
         // POST: Projects/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdProject,Name,Description,IsCompleted")] Project project, int? idProjecter)
@@ -78,33 +73,42 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                Projecter projecter;
+                HttpResponseMessage response;
                 if (User.IsInRole("Admin"))
                 {
-                    var projecter = await _context.Projecters.FindAsync(idProjecter.Value);
-                    project.ProjectersIdUsers.Add(projecter);
+
+                    response = await _httpClientService.GetHttpClient().PostAsJsonAsync($"Projects?idProjecter={idProjecter}", project);
                 }
                 else
                 {
                     var projecterId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                    var projecter = await _context.Projecters.FindAsync(projecterId);
-                    project.ProjectersIdUsers.Add(projecter);
+                    response = await _httpClientService.GetHttpClient().PostAsJsonAsync($"Projects?idProjecter={projecterId}", project);
                 }
-                _context.Add(project);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = project.IdProject });
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var createdProject = await response.Content.ReadFromJsonAsync<Project>();
+                    return RedirectToAction("Details", new { id = createdProject.IdProject });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Не удалось создать проект. Пожалуйста, попробуйте еще раз.");
+                }
             }
 
-            // Если модель не валидна, повторно получаем проектировщиков для передачи в представление
             if (User.IsInRole("Admin"))
             {
-                var projecters = await _context.Projecters.ToListAsync();
+                var projecters = await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Projecter>>("Projecters");
                 ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
             }
             return View(project);
         }
 
 
+
         // GET: Projects/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,14 +116,14 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _httpClientService.GetHttpClient().GetFromJsonAsync<Project>($"Projects/{id}");
             if (project == null)
             {
                 return NotFound();
             }
             if (User.IsInRole("Admin"))
             {
-                var projecters = await _context.Projecters.ToListAsync();
+                var projecters = await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Projecter>>("Projecters");
                 ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
             }
             return View(project);
@@ -128,6 +132,7 @@ namespace AutodorInfoSystem.Controllers
         // POST: Projects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdProject,Name,Description,IsCompleted,Cost")] Project project, int? idProjecter)
@@ -139,59 +144,15 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // Получаем текущий проект из базы данных
-                    var existingProject = await _context.Projects
-                        .Include(p => p.ProjectersIdUsers) // Включаем проектировщиков
-                        .FirstOrDefaultAsync(p => p.IdProject == id);
-
-                    if (existingProject == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Удаляем старую связь с проектировщиком
-                    existingProject.ProjectersIdUsers.Clear();
-
-                    // Если пользователь - администратор, добавляем нового проектировщика
-                    if (User.IsInRole("Admin") && idProjecter.HasValue)
-                    {
-                        var projecter = await _context.Projecters.FindAsync(idProjecter.Value);
-                        if (projecter != null)
-                        {
-                            existingProject.ProjectersIdUsers.Add(projecter);
-                        }
-                    }
-
-                    // Обновляем остальные свойства проекта
-                    existingProject.Name = project.Name;
-                    existingProject.Description = project.Description;
-                    existingProject.IsCompleted = project.IsCompleted;
-                    existingProject.Cost = project.Cost;
-
-                    // Обновляем проект в контексте
-                    _context.Update(existingProject);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjectExists(project.IdProject))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                // Обновляем проект в контексте
+                await _httpClientService.GetHttpClient().PutAsJsonAsync($"Projects/{id}", project);
                 return RedirectToAction(nameof(Index));
             }
 
             // Если модель не валидна, повторно получаем проектировщиков для передачи в представление
             if (User.IsInRole("Admin"))
             {
-                var projecters = await _context.Projecters.ToListAsync();
+                var projecters = await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Projecter>>("Projecters");
                 ViewBag.Projecters = new SelectList(projecters, "IdUser", "LongName");
             }
             return View(project);
@@ -199,17 +160,13 @@ namespace AutodorInfoSystem.Controllers
 
 
         // GET: Projects/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            if (project != null)
-            {
-                _context.Projects.Remove(project);
-            }
-
-            await _context.SaveChangesAsync();
+            await _httpClientService.GetHttpClient().DeleteAsync($"Projects/{id}");
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> DownloadTable(int idProject)
         {
@@ -218,17 +175,7 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Tasks)
-                .ThenInclude(p => p.MaterialsHasTasks)
-                .ThenInclude(p => p.IdMaterialNavigation)
-                .Include(p => p.Tasks)
-                .ThenInclude(p => p.EquipmentHasTasks)
-                .ThenInclude(p => p.IdEquipmentNavigation)
-                .Include(p => p.Tasks)
-                .ThenInclude(p => p.WorkersHasTasks)
-                .ThenInclude(p => p.IdWorkerNavigation)
-                .FirstOrDefaultAsync(p => p.IdProject == idProject);
+            var project = await _httpClientService.GetHttpClient().GetFromJsonAsync<Project>($"Projects/{idProject}");
 
             if (project == null)
             {
@@ -236,11 +183,6 @@ namespace AutodorInfoSystem.Controllers
             }
 
             return File(await _excelService.GenerateProjectReportAsync(project), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{project.Name}.xlsx");
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.IdProject == id);
         }
     }
 }

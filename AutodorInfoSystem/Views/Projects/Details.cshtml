@@ -106,8 +106,11 @@
                                     <th>Название задачи</th>
                                     <th>Описание задачи</th>
                                     <th>Стоимость задачи</th>
-                                    <th></th>
-                                    <th></th>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <th></th>
+                                        <th></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>

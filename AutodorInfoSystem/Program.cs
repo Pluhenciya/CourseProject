@@ -1,4 +1,4 @@
-using AutodorInfoSystem.Data;
+using AutodorInfoSystem.Middlewares;
 using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,14 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AutodorContext>(options =>
-{
-    options.UseMySql(Environment.GetEnvironmentVariable("MySQLConnString") ?? builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.0-mysql"));
-});
-
-builder.Services.AddScoped<UserService, UserService>();
-builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddScoped<ExcelService>();
+builder.Services.AddSingleton<HttpClientService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -59,37 +53,7 @@ builder.Services.AddAuthentication(options =>
 });
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AutodorContext>();
-
-    if (dbContext.Database.GetPendingMigrations().Any())
-    {
-        dbContext.Database.Migrate();
-    }
-    if (!dbContext.Admins.Any())
-    {
-        var username = Environment.GetEnvironmentVariable("ADMIN_LOGIN");
-        var password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
-        var createdUser = new User
-        {
-            Login = username,
-            Password = BCrypt.Net.BCrypt.HashPassword(password)
-        };
-
-        dbContext.Users.Add(createdUser);
-        dbContext.SaveChanges();
-        var user = dbContext.Users.FirstOrDefault(u => u.Login == username);
-        if (user == null)
-            return;
-        dbContext.Admins.Add(new Admin
-        {
-            UsersIdUser = user.IdUser
-        });
-        dbContext.SaveChanges();
-    }
-
-}
+app.UseMiddleware<HttpClientMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

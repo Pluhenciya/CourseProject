@@ -1,0 +1,6 @@
+@AutodorInfoApi_HostAddress = http://localhost:5217
+
+GET {{AutodorInfoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

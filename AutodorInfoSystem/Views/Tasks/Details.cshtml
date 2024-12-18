@@ -91,8 +91,11 @@
                                     <th>Количество</th>
                                     <th>Цена</th>
                                     <th>Стоимость</th>
-                                    <th></th>
-                                    <th></th>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <th></th>
+                                        <th></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -187,8 +190,11 @@
                                     <th>Количество</th>
                                     <th>Цена</th>
                                     <th>Стоимость</th>
-                                    <th></th>
-                                    <th></th>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <th></th>
+                                        <th></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -283,8 +289,11 @@
                                     <th>Количество</th>
                                     <th>Зарплата</th>
                                     <th>Стоимость</th>
-                                    <th></th>
-                                    <th></th>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <th></th>
+                                        <th></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
