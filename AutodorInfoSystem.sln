@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutodorInfoSystem", "AutodorInfoSystem\AutodorInfoSystem.csproj", "{82ED56E9-FAB6-4DC7-AE47-2C1102ED5A3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutodorInfoSystem", "AutodorInfoSystem\AutodorInfoSystem.csproj", "{82ED56E9-FAB6-4DC7-AE47-2C1102ED5A3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutodorInfoApi", "AutodorInfoApi\AutodorInfoApi.csproj", "{3BE144C3-84EA-4D36-83A9-4BE1945E03ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{82ED56E9-FAB6-4DC7-AE47-2C1102ED5A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82ED56E9-FAB6-4DC7-AE47-2C1102ED5A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82ED56E9-FAB6-4DC7-AE47-2C1102ED5A3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BE144C3-84EA-4D36-83A9-4BE1945E03ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BE144C3-84EA-4D36-83A9-4BE1945E03ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BE144C3-84EA-4D36-83A9-4BE1945E03ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BE144C3-84EA-4D36-83A9-4BE1945E03ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -53,8 +53,11 @@
                                         <th scope="col">Логин</th>
                                         <th scope="col">Роль</th>
                                         <th scope="col">ФИО</th>
-                                        <th></th>
-                                        <th></th>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <th></th>
+                                            <th></th>
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>

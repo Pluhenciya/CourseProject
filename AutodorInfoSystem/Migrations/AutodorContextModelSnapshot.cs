@@ -45,6 +45,12 @@ namespace AutodorInfoSystem.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdEquipment"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_deleted");
@@ -105,6 +111,12 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnName("id_material");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdMaterial"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)")
@@ -173,6 +185,12 @@ namespace AutodorInfoSystem.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("double")
                         .HasColumnName("cost");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -298,6 +316,12 @@ namespace AutodorInfoSystem.Migrations
                         .HasColumnName("id_worker");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdWorker"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)")

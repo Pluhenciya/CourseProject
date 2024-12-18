@@ -1,4 +1,6 @@
 ﻿using AutodorInfoSystem.Data;
+using AutodorInfoSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,17 +10,12 @@ namespace AutodorInfoSystem.Controllers
     public class TasksController : Controller
     {
         private readonly AutodorContext _context;
+        private readonly HttpClientService _httpClientService;
 
-        public TasksController(AutodorContext context)
+        public TasksController(AutodorContext context, HttpClientService httpClientService)
         {
             _context = context;
-        }
-
-        // GET: Tasks
-        public async Task<IActionResult> Index()
-        {
-            var autodorContext = _context.Tasks.Include(t => t.IdProjectNavigation);
-            return View(await autodorContext.ToListAsync());
+            _httpClientService = httpClientService;
         }
 
         // GET: Tasks/Details/5
@@ -29,15 +26,7 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var task = await _context.Tasks
-                .Include(t => t.IdProjectNavigation)
-                .Include(t => t.MaterialsHasTasks)
-                    .ThenInclude(m => m.IdMaterialNavigation)
-                .Include(t => t.EquipmentHasTasks)
-                    .ThenInclude(e => e.IdEquipmentNavigation)
-                .Include(t => t.WorkersHasTasks)
-                    .ThenInclude(w => w.IdWorkerNavigation)
-                .FirstOrDefaultAsync(m => m.IdTask == id);
+            var task = await _httpClientService.GetHttpClient().GetFromJsonAsync<Models.Task>($"Tasks/{id}");
             if (task == null)
             {
                 return NotFound();
@@ -47,6 +36,7 @@ namespace AutodorInfoSystem.Controllers
         }
 
         // GET: Tasks/Create
+        [Authorize]
         public IActionResult Create(int idProject)
         {
             ViewBag.IdProject = idProject;
@@ -56,6 +46,7 @@ namespace AutodorInfoSystem.Controllers
         // POST: Tasks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTask,Name,Description,IdProject")] Models.Task task)
@@ -64,8 +55,11 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(task);
-                await _context.SaveChangesAsync();
+                var response = await _httpClientService.GetHttpClient().PostAsJsonAsync("Tasks", task);
+                if (response.IsSuccessStatusCode)
+                {
+                    task = await response.Content.ReadFromJsonAsync<Models.Task>();
+                }
                 return RedirectToAction("Details", "Tasks", new { id = task.IdTask }); ;
             }
             ViewBag.IdProject = task.IdProject;
@@ -73,6 +67,7 @@ namespace AutodorInfoSystem.Controllers
         }
 
         // GET: Tasks/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,7 +75,7 @@ namespace AutodorInfoSystem.Controllers
                 return NotFound();
             }
 
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _httpClientService.GetHttpClient().GetFromJsonAsync<Models.Task>($"Tasks/{id}");
             if (task == null)
             {
                 return NotFound();
@@ -91,6 +86,7 @@ namespace AutodorInfoSystem.Controllers
         // POST: Tasks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTask,Name,Description,IdProject,Cost")] Models.Task task)
@@ -106,8 +102,7 @@ namespace AutodorInfoSystem.Controllers
             {
                 try
                 {
-                    _context.Update(task);
-                    await _context.SaveChangesAsync();
+                    await _httpClientService.GetHttpClient().PutAsJsonAsync($"Tasks/{id}", task);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,15 +121,11 @@ namespace AutodorInfoSystem.Controllers
         }
 
         // GET: Tasks/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
-			var task = await _context.Tasks.FindAsync(id);
-			if (task != null)
-			{
-				_context.Tasks.Remove(task);
-			}
-
-			await _context.SaveChangesAsync();
+            var task = await _httpClientService.GetHttpClient().GetFromJsonAsync<Models.Task>($"Tasks/{id}");
+            await _httpClientService.GetHttpClient().DeleteAsync($"Tasks/{id}");
 			return RedirectToAction("Details", "Projects", new { id = task.IdProject });
 		}
 

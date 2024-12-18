@@ -9,8 +9,13 @@ function fetchSimilarNames() {
         return;
     }
 
-    fetch(`/Equipments/GetSimilarNames?name=${nameInput}`)
-        .then(response => response.json())
+    fetch(`/Equipments/GetSimilarNames?name=${encodeURIComponent(nameInput)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             suggestionsList.innerHTML = '';
             if (data.length > 0) {
@@ -32,6 +37,9 @@ function fetchSimilarNames() {
                 suggestionsList.style.display = 'none';
                 priceInput.removeAttribute('readonly'); // Делаем поле цены доступным для редактирования, если нет подсказок
             }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
         });
 }
 

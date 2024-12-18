@@ -26,5 +26,8 @@ public partial class Worker
     [Column("is_deleted")]
     public bool IsDeleted { get; set; } = false;
 
+    [Column("created_date")]
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
     public virtual ICollection<WorkersHasTask> WorkersHasTasks { get; set; } = new List<WorkersHasTask>();
 }

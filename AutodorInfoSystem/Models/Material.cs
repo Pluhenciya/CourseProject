@@ -29,5 +29,8 @@ public partial class Material
     [Column("is_deleted")]
     public bool IsDeleted { get; set; } = false;
 
+    [Column("created_date")]
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
     public virtual ICollection<MaterialsHasTask> MaterialsHasTasks { get; set; } = new List<MaterialsHasTask>();
 }

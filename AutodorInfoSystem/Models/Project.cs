@@ -23,6 +23,9 @@ public partial class Project
     [Column("cost")]
     public double Cost { get; set; }
 
+    [Column("created_date")]
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 
     public virtual ICollection<Projecter> ProjectersIdUsers { get; set; } = new List<Projecter>();

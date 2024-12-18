@@ -1,10 +1,10 @@
 ﻿@model AutodorInfoSystem.Models.Material
 
 @{
-    ViewData["Title"] = "Редактирование материала";
+    ViewData["Title"] = @Model.Name;
 }
 
-<h1 class="mb-4">Редактирование материала</h1>
+<h1 class="mb-4">@Model.Name</h1>
 
 <div class="card p-4">
     <div class="row">

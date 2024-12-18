@@ -71,6 +71,8 @@ public partial class AutodorContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(45)
                 .HasColumnName("name");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("NOW()");
         });
 
         modelBuilder.Entity<EquipmentHasTask>(entity =>
@@ -115,6 +117,8 @@ public partial class AutodorContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(45)
                 .HasColumnName("name");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("NOW()");
         });
 
         modelBuilder.Entity<MaterialsHasTask>(entity =>
@@ -161,6 +165,8 @@ public partial class AutodorContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .HasColumnName("name");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("NOW()");
         });
 
         modelBuilder.Entity<Projecter>(entity =>
@@ -261,6 +267,8 @@ public partial class AutodorContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(45)
                 .HasColumnName("name");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("NOW()");
         });
 
         modelBuilder.Entity<WorkersHasTask>(entity =>

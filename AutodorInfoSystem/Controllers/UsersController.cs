@@ -1,34 +1,39 @@
 ﻿using AutodorInfoSystem.Data;
 using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Common;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace AutodorInfoSystem.Controllers
 {
     public class UsersController : Controller
     {
         private readonly AutodorContext _context;
-        private readonly UserService _userService;
-        private readonly TokenService _tokenService;
+        private readonly HttpClientService _httpClientService;
 
-        public UsersController(AutodorContext context, UserService userService, TokenService tokenService)
+        public UsersController(AutodorContext context, HttpClientService httpClientService)
         {
             _context = context;
-            _userService = userService;
-            _tokenService = tokenService;
+            _httpClientService = httpClientService;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.Include(u => u.Projecter).Include(u => u.Admin).ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(User user)
@@ -60,6 +65,7 @@ namespace AutodorInfoSystem.Controllers
             return View(user);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var user = await _context.Users.Include(u => u.Projecter).FirstOrDefaultAsync(u => u.IdUser == id);
@@ -76,6 +82,7 @@ namespace AutodorInfoSystem.Controllers
             return View(user);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(User user)
@@ -156,17 +163,18 @@ namespace AutodorInfoSystem.Controllers
                 Login = login,
                 Password = password
             };
+            var response = await _httpClientService.GetHttpClient().PostAsJsonAsync("Users/login", user);
 
-            var userExist = _userService.UserVerify(user);
-
-            if (userExist == null)
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+                Response.Cookies.Append("A", tokenResponse.Token); // Предполагается, что токен находится в свойстве Token
+            }
+            else
             {
                 TempData["ErrorMessage"] = "Неверный логин или пароль.";
                 return Redirect("~/");
             }
-
-            Response.Cookies.Append("A", _tokenService.CreateToken(userExist));
-
             return Redirect("~/");
         }
 
@@ -177,6 +185,7 @@ namespace AutodorInfoSystem.Controllers
             return Redirect("~/");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             var user = await _context.Users.FindAsync(id);

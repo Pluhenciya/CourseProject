@@ -1,4 +1,5 @@
 using AutodorInfoSystem.Data;
+using AutodorInfoSystem.Middlewares;
 using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,9 +20,8 @@ builder.Services.AddDbContext<AutodorContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("MySQLConnString") ?? builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.0-mysql"));
 });
 
-builder.Services.AddScoped<UserService, UserService>();
-builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddScoped<ExcelService>();
+builder.Services.AddSingleton<HttpClientService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -88,6 +88,8 @@ using (var scope = app.Services.CreateScope())
         dbContext.SaveChanges();
     }
 }
+
+app.UseMiddleware<HttpClientMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
