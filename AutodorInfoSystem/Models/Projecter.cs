@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AutodorInfoSystem.Models;
 
@@ -17,6 +18,7 @@ public partial class Projecter
     [NotMapped]
     public string LongName => $"{Surname} {Name} {Patronymic}";
 
+    [JsonIgnore]
     public virtual User IdUserNavigation { get; set; } = null!;
 
     public virtual ICollection<Project> ProjectsIdProjects { get; set; } = new List<Project>();

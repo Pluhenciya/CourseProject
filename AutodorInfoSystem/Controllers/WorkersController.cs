@@ -100,6 +100,7 @@ namespace AutodorInfoSystem.Controllers
         {
             var worker = await _httpClientService.GetHttpClient()
                 .GetFromJsonAsync<Worker>($"Workers/one?id={id}");
+            
             if (worker != null)
             {
                 worker.IsDeleted = true;

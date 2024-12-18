@@ -2,12 +2,11 @@
 
 #nullable disable
 
-namespace AutodorInfoSystem.Migrations
+namespace AutodorInfoApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTriggersForCost : Migration
+    public partial class AddTriggers : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
