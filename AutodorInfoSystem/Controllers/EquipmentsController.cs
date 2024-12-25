@@ -1,5 +1,4 @@
-﻿using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Models;
+﻿using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +8,10 @@ namespace AutodorInfoSystem.Controllers
 {
     public class EquipmentsController : Controller
     {
-        private readonly AutodorContext _context;
         private readonly HttpClientService _httpClientService;
 
-        public EquipmentsController(AutodorContext context, HttpClientService httpClientService)
+        public EquipmentsController(HttpClientService httpClientService)
         {
-            _context = context;
             _httpClientService = httpClientService;
         }
 
@@ -187,8 +184,6 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
                     var findEquipment = await _httpClientService.GetHttpClient().GetFromJsonAsync<Equipment>($"Equipments/one?name={equipment.Name}");
                     if (findEquipment != null)
                     {
@@ -210,18 +205,6 @@ namespace AutodorInfoSystem.Controllers
                             Quantity = equipment.Quantity ?? 0
                         });
                     }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EquipmentExists(equipment.IdEquipment))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction("Details", "Tasks", new { id = idTask });
             }
             if (equipment.Price == null)
@@ -261,11 +244,6 @@ namespace AutodorInfoSystem.Controllers
             }
             await _httpClientService.GetHttpClient().PutAsJsonAsync($"EquipmentHasTasks", existingRelation);
             return RedirectToAction("Details", "Tasks", new { id = idTask });
-        }
-
-        private bool EquipmentExists(int id)
-        {
-            return _context.Equipment.Any(e => e.IdEquipment == id);
         }
     }
 }

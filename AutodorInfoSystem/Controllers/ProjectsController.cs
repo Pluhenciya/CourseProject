@@ -1,24 +1,19 @@
-﻿using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Models;
+﻿using AutodorInfoSystem.Models;
 using AutodorInfoSystem.Services;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AutodorInfoSystem.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly AutodorContext _context;
         private readonly ExcelService _excelService;
         private readonly HttpClientService _httpClientService;
 
-        public ProjectsController(AutodorContext context, ExcelService excelService, HttpClientService httpClientService)
+        public ProjectsController(ExcelService excelService, HttpClientService httpClientService)
         {
-            _context = context;
             _excelService = excelService;
             _httpClientService = httpClientService;
         }
@@ -156,48 +151,8 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // Получаем текущий проект из базы данных
-                    var existingProject = await _httpClientService.GetHttpClient().GetFromJsonAsync<Project>($"Projects/{id}");
-
-                    if (existingProject == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Если пользователь - администратор, добавляем нового проектировщика
-                    if (User.IsInRole("Admin") && idProjecter.HasValue)
-                    {
-                        // Удаляем старую связь с проектировщиком
-                        existingProject.ProjectersIdUsers.Clear();
-                        var projecter = await _httpClientService.GetHttpClient().GetFromJsonAsync<Projecter>($"Projecters/{idProjecter}");
-                        if (projecter != null)
-                        {
-                            existingProject.ProjectersIdUsers.Add(projecter);
-                        }
-                    }
-
-                    // Обновляем остальные свойства проекта
-                    existingProject.Name = project.Name;
-                    existingProject.Description = project.Description;
-                    existingProject.IsCompleted = project.IsCompleted;
-                    existingProject.Cost = project.Cost;
-
-                    // Обновляем проект в контексте
-                    await _httpClientService.GetHttpClient().PutAsJsonAsync($"Projects/{id}", project);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjectExists(project.IdProject))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                // Обновляем проект в контексте
+                await _httpClientService.GetHttpClient().PutAsJsonAsync($"Projects/{id}", project);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -235,11 +190,6 @@ namespace AutodorInfoSystem.Controllers
             }
 
             return File(await _excelService.GenerateProjectReportAsync(project), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{project.Name}.xlsx");
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.IdProject == id);
         }
     }
 }

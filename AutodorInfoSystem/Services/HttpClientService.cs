@@ -8,7 +8,7 @@ namespace AutodorInfoSystem.Services
 
         public HttpClientService()
         {
-            httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5217/api/") };
+            httpClient = new HttpClient { BaseAddress = new Uri("http://adis_api:8080/api/") };
         }
 
         public void SetAuthorization(string token)

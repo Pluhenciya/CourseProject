@@ -100,6 +100,7 @@ namespace AutodorInfoSystem.Controllers
         {
             var worker = await _httpClientService.GetHttpClient()
                 .GetFromJsonAsync<Worker>($"Workers/one?id={id}");
+            
             if (worker != null)
             {
                 worker.IsDeleted = true;
@@ -115,23 +116,35 @@ namespace AutodorInfoSystem.Controllers
             return View();
         }
 
-        // POST: Workers/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // POST: Workers/Create
         public async Task<IActionResult> Create(Worker worker, int idTask)
         {
             if (ModelState.IsValid)
             {
-                var findWorker = await _httpClientService.GetHttpClient()
-                    .GetFromJsonAsync<Worker>($"Workers/one?name={worker.Name}");
-                if (findWorker != null)
+                var response = await _httpClientService.GetHttpClient().GetAsync($"Workers/one?name={worker.Name}");
+                if (response.IsSuccessStatusCode)
                 {
-                    await _httpClientService.GetHttpClient().PostAsJsonAsync("WorkersHasTasks", new WorkersHasTask
+                    var findWorker = await response.Content.ReadFromJsonAsync<Worker>();
+                    response = await _httpClientService.GetHttpClient().GetAsync($"WorkersHasTasks/{idTask}/{findWorker.IdWorker}");
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        IdTask = idTask,
-                        IdWorker = findWorker.IdWorker,
-                        Quantity = worker.Quantity ?? 0,
-                    });
+                        var existingRelation = await response.Content.ReadFromJsonAsync<WorkersHasTask>();
+                        ViewBag.ExistingRelation = existingRelation;
+                        ViewBag.NewQuantity = worker.Quantity ?? 0;
+                        ViewBag.IdTask = idTask;
+                        return View("ConfirmQuantity", worker); // Создайте представление ConfirmQuantity
+                    }
+                    else
+                    {
+                        await _httpClientService.GetHttpClient().PostAsJsonAsync("WorkersHasTask", new WorkersHasTask
+                        {
+                            IdTask = idTask,
+                            IdWorker = findWorker.IdWorker,
+                            Quantity = worker.Quantity ?? 0,
+                        });
+                    }
                 }
                 else
                 {
@@ -151,7 +164,7 @@ namespace AutodorInfoSystem.Controllers
             if (worker.Salary == null)
             {
                 ModelState["Salary"].Errors.Clear();
-                ModelState.AddModelError("Salary", "Введенное не является зарплатой");
+                ModelState.AddModelError("Salary", "Введенное не является ценой");
             }
             ViewBag.IdTask = idTask;
             return View(worker);

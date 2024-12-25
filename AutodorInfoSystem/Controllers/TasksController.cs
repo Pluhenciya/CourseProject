@@ -1,5 +1,4 @@
-﻿using AutodorInfoSystem.Data;
-using AutodorInfoSystem.Services;
+﻿using AutodorInfoSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,12 +8,10 @@ namespace AutodorInfoSystem.Controllers
 {
     public class TasksController : Controller
     {
-        private readonly AutodorContext _context;
         private readonly HttpClientService _httpClientService;
 
-        public TasksController(AutodorContext context, HttpClientService httpClientService)
+        public TasksController(HttpClientService httpClientService)
         {
-            _context = context;
             _httpClientService = httpClientService;
         }
 
@@ -100,21 +97,7 @@ namespace AutodorInfoSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
                     await _httpClientService.GetHttpClient().PutAsJsonAsync($"Tasks/{id}", task);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TaskExists(task.IdTask))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction("Details", "Projects", new { id = task.IdProject });
             }
             return View(task);
@@ -128,10 +111,5 @@ namespace AutodorInfoSystem.Controllers
             await _httpClientService.GetHttpClient().DeleteAsync($"Tasks/{id}");
 			return RedirectToAction("Details", "Projects", new { id = task.IdProject });
 		}
-
-        private bool TaskExists(int id)
-        {
-            return _context.Tasks.Any(e => e.IdTask == id);
-        }
     }
 }
