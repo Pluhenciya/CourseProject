@@ -21,15 +21,22 @@ namespace AutodorInfoSystem.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
+            // Проверяем, аутентифицирован ли пользователь
             if (User.Identity.IsAuthenticated)
             {
+                // Если пользователь имеет роль "Admin"
                 if (User.IsInRole("Admin"))
+                    // Получаем список всех проектов и возвращаем представление с этими данными
                     return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>("Projects"));
 
+                // Если пользователь не администратор, получаем проекты, связанные с конкретным пользователем
                 return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>($"Projects?idProjecter={Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)}"));
             }
             else
+            {
+                // Если пользователь не аутентифицирован, получаем только завершенные проекты
                 return View(await _httpClientService.GetHttpClient().GetFromJsonAsync<List<Project>>("Projects?isCompleted=true"));
+            }
         }
 
         // GET: Projects/Details/5

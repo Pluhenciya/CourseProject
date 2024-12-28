@@ -143,6 +143,7 @@ namespace AutodorInfoApi.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user, [FromQuery] string? role, [FromQuery] string? surname, [FromQuery] string? name, [FromQuery] string? patronymic)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             if (role == "admin")
                 user.Admin = new Admin
                 {

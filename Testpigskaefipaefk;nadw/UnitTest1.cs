@@ -1,0 +1,11 @@
+namespace Testpigskaefipaefk_nadw
+{
+    public class UnitTest1
+    {
+        [Fact]
+        public void Test1()
+        {
+
+        }
+    }
+}

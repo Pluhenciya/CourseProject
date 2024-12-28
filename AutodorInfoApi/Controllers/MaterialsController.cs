@@ -42,10 +42,22 @@ namespace AutodorInfoApi.Controllers
         }
 
         // GET: api/Materials/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Material>> GetMaterial(int id)
+        [HttpGet("one")]
+        public async Task<ActionResult<Material>> GetMaterial([FromQuery] int? id, [FromQuery] string? name)
         {
-            var material = await _context.Materials.FindAsync(id);
+            var query = _context.Materials.OrderBy(e => e.CreatedDate).AsQueryable();
+
+            if (id.HasValue)
+            {
+                query = query.Where(m => m.IdMaterial == id);
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(m => m.Name.Contains(name));
+            }
+
+            var material = await query.FirstOrDefaultAsync();
 
             if (material == null)
             {

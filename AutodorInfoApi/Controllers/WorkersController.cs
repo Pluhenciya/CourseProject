@@ -42,10 +42,22 @@ namespace AutodorInfoApi.Controllers
         }
 
         // GET: api/Workers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Worker>> GetWorker(int id)
+        [HttpGet("one")]
+        public async Task<ActionResult<Worker>> GetWorker([FromQuery] int? id, [FromQuery] string? name)
         {
-            var worker = await _context.Workers.FindAsync(id);
+            var query = _context.Workers.OrderBy(e => e.CreatedDate).AsQueryable();
+
+            if (id.HasValue)
+            {
+                query = query.Where(w => w.IdWorker == id);
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(w => w.Name.Contains(name));
+            }
+
+            var worker = await query.FirstOrDefaultAsync();
 
             if (worker == null)
             {
